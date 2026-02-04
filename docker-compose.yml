@@ -2,8 +2,8 @@ version: "3"
 
 services:
   server:
-    image: gopg-server
-    container_name: gopg-server
+    image: bloodlink-server
+    container_name: bloodlink-server
     build:
       dockerfile: Dockerfile
       context: .
@@ -16,13 +16,13 @@ services:
 
   postgres:
     image: postgres:16.0
-    container_name: postgres
+    container_name: bloodlink-postgres
     ports:
       - "5400:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: GoPgDB
+      POSTGRES_DB: BloodLinkDB
     volumes:
       - postgres-data:/var/lib/postgresql/data
     networks:

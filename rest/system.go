@@ -10,11 +10,11 @@ import (
 // @Description this route is used to check if the api is running
 // @Tags system
 // @Produce  plain
-// @Success 200 {string} string "GoPg Server API is listening"
+// @Success 200 {string} string "BloodLink Server API is listening"
 // @Router /ping [get]
 func CheckApiStatus(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
-	w.Write([]byte("GoPg Server API is listening"))
+	w.Write([]byte("BloodLink Server API is listening"))
 }
 
 // GetMyIP godoc

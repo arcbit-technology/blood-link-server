@@ -7,7 +7,7 @@ RUN go mod download
 
 COPY . ./
 
-RUN CGO_ENABLED=0 go build -o api/gopg-server ./main.go
+RUN CGO_ENABLED=0 go build -o api/bloodlink-server ./main.go
 
 FROM frolvlad/alpine-glibc
 
@@ -19,4 +19,4 @@ COPY --from=build_stage /app/config.docker.json ./api/config.json
 
 EXPOSE 8080
 
-CMD [ "./api/gopg-server"]
+CMD [ "./api/bloodlink-server"]

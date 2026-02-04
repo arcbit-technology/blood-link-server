@@ -553,7 +553,7 @@ const docTemplate = `{
                 "summary": "check api status",
                 "responses": {
                     "200": {
-                        "description": "GoPg Server API is listening",
+                        "description": "BloodLink Server API is listening",
                         "schema": {
                             "type": "string"
                         }

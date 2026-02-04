@@ -34,11 +34,11 @@ definitions:
       plan:
         type: string
       role:
-        $ref: '#/definitions/model.Role'
+        $ref: "#/definitions/model.Role"
       token:
         type: string
       user:
-        $ref: '#/definitions/model.User'
+        $ref: "#/definitions/model.User"
     type: object
   model.LoginRequest:
     properties:
@@ -79,18 +79,18 @@ definitions:
       plan:
         type: string
       role:
-        $ref: '#/definitions/model.Role'
+        $ref: "#/definitions/model.Role"
       token:
         type: string
       user:
-        $ref: '#/definitions/model.User'
+        $ref: "#/definitions/model.User"
     type: object
   model.RegisterResponse:
     properties:
       message:
         type: string
       user:
-        $ref: '#/definitions/model.User'
+        $ref: "#/definitions/model.User"
     type: object
   model.Role:
     properties:
@@ -108,7 +108,7 @@ definitions:
         type: string
       permission:
         items:
-          $ref: '#/definitions/model.Permission'
+          $ref: "#/definitions/model.Permission"
         type: array
       updatedAt:
         type: string
@@ -175,7 +175,7 @@ paths:
     get:
       description: that route is use to authenticate with social media
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -191,17 +191,17 @@ paths:
             type: string
       summary: social auth
       tags:
-      - authentication
+        - authentication
   /auth/{provider}/callback:
     get:
       description: that route is use to authenticate with social media
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.Login'
+            $ref: "#/definitions/model.Login"
         "403":
           description: Forbidden
           schema:
@@ -212,26 +212,26 @@ paths:
             type: string
       summary: social auth callback
       tags:
-      - authentication
+        - authentication
   /auth/fetchlogindata:
     get:
       consumes:
-      - application/json
+        - application/json
       description: that route is use to fetch login data
       parameters:
-      - default: '"Bearer YOUR_ACCESS_TOKEN"'
-        description: Bearer Token
-        in: header
-        name: Authorization
-        required: true
-        type: string
+        - default: '"Bearer YOUR_ACCESS_TOKEN"'
+          description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.Login'
+            $ref: "#/definitions/model.Login"
         "400":
           description: Bad Request
           schema:
@@ -245,35 +245,35 @@ paths:
           schema:
             type: string
       security:
-      - Bearer: []
+        - Bearer: []
       summary: fetch login data
       tags:
-      - authentication
+        - authentication
   /changepassword/{id}:
     put:
       consumes:
-      - application/json
+        - application/json
       description: this route is used to change or reset password of the user
       parameters:
-      - default: '"Bearer YOUR_ACCESS_TOKEN"'
-        description: Bearer Token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: change password request
-        in: body
-        name: user
-        required: true
-        schema:
-          $ref: '#/definitions/model.ChangePassword'
+        - default: '"Bearer YOUR_ACCESS_TOKEN"'
+          description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          type: string
+        - description: id
+          in: path
+          name: id
+          required: true
+          type: string
+        - description: change password request
+          in: body
+          name: user
+          required: true
+          schema:
+            $ref: "#/definitions/model.ChangePassword"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -288,35 +288,35 @@ paths:
           schema:
             type: string
       security:
-      - Bearer: []
+        - Bearer: []
       summary: update user
       tags:
-      - users
+        - users
   /changetemppassword:
     put:
       consumes:
-      - application/json
+        - application/json
       description: this route is used to change the temporary password of the user
       parameters:
-      - default: '"Bearer YOUR_ACCESS_TOKEN"'
-        description: Bearer Token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: change password request
-        in: body
-        name: user
-        required: true
-        schema:
-          $ref: '#/definitions/model.ChangeTempPassword'
+        - default: '"Bearer YOUR_ACCESS_TOKEN"'
+          description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          type: string
+        - description: change password request
+          in: body
+          name: user
+          required: true
+          schema:
+            $ref: "#/definitions/model.ChangeTempPassword"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.Login'
+            $ref: "#/definitions/model.Login"
         "400":
           description: Bad Request
           schema:
@@ -330,30 +330,31 @@ paths:
           schema:
             type: string
       security:
-      - Bearer: []
+        - Bearer: []
       summary: update user password
       tags:
-      - users
+        - users
   /forgotpassword:
     post:
       consumes:
-      - application/json
-      description: that route is use to send an email to the user with a temporary
+        - application/json
+      description:
+        that route is use to send an email to the user with a temporary
         password
       parameters:
-      - description: Request body containing user email
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/model.ForgotPasswordRequest'
+        - description: Request body containing user email
+          in: body
+          name: body
+          required: true
+          schema:
+            $ref: "#/definitions/model.ForgotPasswordRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.ForgotPasswordResponse'
+            $ref: "#/definitions/model.ForgotPasswordResponse"
         "400":
           description: Bad Request
           schema:
@@ -364,19 +365,19 @@ paths:
             type: string
       summary: forgot password
       tags:
-      - authentication
+        - authentication
   /iftokenvalid:
     get:
       description: this route is used to check if the token is valid
       parameters:
-      - default: '"Bearer YOUR_ACCESS_TOKEN"'
-        description: Bearer Token
-        in: header
-        name: Authorization
-        required: true
-        type: string
+        - default: '"Bearer YOUR_ACCESS_TOKEN"'
+          description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -391,29 +392,29 @@ paths:
           schema:
             type: string
       security:
-      - Bearer: []
+        - Bearer: []
       summary: check if token is valid
       tags:
-      - authentication
+        - authentication
   /login:
     post:
       consumes:
-      - application/json
+        - application/json
       description: that route is use to log into the app
       parameters:
-      - description: auth
-        in: body
-        name: auth
-        required: true
-        schema:
-          $ref: '#/definitions/model.LoginRequest'
+        - description: auth
+          in: body
+          name: auth
+          required: true
+          schema:
+            $ref: "#/definitions/model.LoginRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.Login'
+            $ref: "#/definitions/model.Login"
         "400":
           description: Bad Request
           schema:
@@ -424,31 +425,31 @@ paths:
             type: string
       summary: log into the app
       tags:
-      - authentication
+        - authentication
   /login/{profiletype}:
     get:
       consumes:
-      - application/json
+        - application/json
       description: that route is use to log into profile
       parameters:
-      - default: '"Bearer YOUR_ACCESS_TOKEN"'
-        description: Bearer Token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: profiletype
-        in: path
-        name: profiletype
-        required: true
-        type: string
+        - default: '"Bearer YOUR_ACCESS_TOKEN"'
+          description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          type: string
+        - description: profiletype
+          in: path
+          name: profiletype
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.ProfileLogin'
+            $ref: "#/definitions/model.ProfileLogin"
         "400":
           description: Bad Request
           schema:
@@ -462,24 +463,24 @@ paths:
           schema:
             type: string
       security:
-      - Bearer: []
+        - Bearer: []
       summary: log into profile
       tags:
-      - authentication
+        - authentication
   /logout:
     put:
       consumes:
-      - application/json
+        - application/json
       description: that route is use to log out the app
       parameters:
-      - default: '"Bearer YOUR_ACCESS_TOKEN"'
-        description: Bearer Token
-        in: header
-        name: Authorization
-        required: true
-        type: string
+        - default: '"Bearer YOUR_ACCESS_TOKEN"'
+          description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -494,15 +495,15 @@ paths:
           schema:
             type: string
       security:
-      - Bearer: []
+        - Bearer: []
       summary: log out the app
       tags:
-      - authentication
+        - authentication
   /myip:
     get:
       description: this route is used to get the ip address of the requester
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -512,35 +513,36 @@ paths:
             type: object
       summary: get requester ip
       tags:
-      - system
+        - system
   /ping:
     get:
       description: this route is used to check if the api is running
       produces:
-      - text/plain
+        - text/plain
       responses:
         "200":
-          description: GoPg Server API is listening
+          description: BloodLink Server API is listening
           schema:
             type: string
       summary: check api status
       tags:
-      - system
+        - system
   /profilecomplete:
     get:
       consumes:
-      - application/json
-      description: this route is used to get the profile complete percentage of the
+        - application/json
+      description:
+        this route is used to get the profile complete percentage of the
         user
       parameters:
-      - default: '"Bearer YOUR_ACCESS_TOKEN"'
-        description: Bearer Token
-        in: header
-        name: Authorization
-        required: true
-        type: string
+        - default: '"Bearer YOUR_ACCESS_TOKEN"'
+          description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -555,29 +557,29 @@ paths:
           schema:
             type: string
       security:
-      - Bearer: []
+        - Bearer: []
       summary: get profile complete percentage
       tags:
-      - users
+        - users
   /register:
     post:
       consumes:
-      - application/json
+        - application/json
       description: that route is use to register a new user
       parameters:
-      - description: Request body containing user registration information
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/model.User'
+        - description: Request body containing user registration information
+          in: body
+          name: body
+          required: true
+          schema:
+            $ref: "#/definitions/model.User"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.RegisterResponse'
+            $ref: "#/definitions/model.RegisterResponse"
         "400":
           description: Bad Request
           schema:
@@ -596,32 +598,32 @@ paths:
             type: string
       summary: register a new user
       tags:
-      - authentication
+        - authentication
   /resetpassword/{id}:
     put:
       consumes:
-      - application/json
+        - application/json
       description: this route is used to change or reset password of the user
       parameters:
-      - default: '"Bearer YOUR_ACCESS_TOKEN"'
-        description: Bearer Token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: change password request
-        in: body
-        name: user
-        required: true
-        schema:
-          $ref: '#/definitions/model.ChangePassword'
+        - default: '"Bearer YOUR_ACCESS_TOKEN"'
+          description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          type: string
+        - description: id
+          in: path
+          name: id
+          required: true
+          type: string
+        - description: change password request
+          in: body
+          name: user
+          required: true
+          schema:
+            $ref: "#/definitions/model.ChangePassword"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -636,35 +638,35 @@ paths:
           schema:
             type: string
       security:
-      - Bearer: []
+        - Bearer: []
       summary: update user
       tags:
-      - users
+        - users
   /user:
     post:
       consumes:
-      - application/json
+        - application/json
       description: this route is used to create a new user
       parameters:
-      - default: '"Bearer YOUR_ACCESS_TOKEN"'
-        description: Bearer Token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: user
-        in: body
-        name: user
-        required: true
-        schema:
-          $ref: '#/definitions/model.User'
+        - default: '"Bearer YOUR_ACCESS_TOKEN"'
+          description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          type: string
+        - description: user
+          in: body
+          name: user
+          required: true
+          schema:
+            $ref: "#/definitions/model.User"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.User'
+            $ref: "#/definitions/model.User"
         "400":
           description: Bad Request
           schema:
@@ -674,29 +676,29 @@ paths:
           schema:
             type: string
       security:
-      - Bearer: []
+        - Bearer: []
       summary: create user
       tags:
-      - users
+        - users
   /user/{id}:
     delete:
       consumes:
-      - application/json
+        - application/json
       description: this route is used to delete an existing user
       parameters:
-      - default: '"Bearer YOUR_ACCESS_TOKEN"'
-        description: Bearer Token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: string
+        - default: '"Bearer YOUR_ACCESS_TOKEN"'
+          description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          type: string
+        - description: id
+          in: path
+          name: id
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -711,33 +713,33 @@ paths:
           schema:
             type: string
       security:
-      - Bearer: []
+        - Bearer: []
       summary: delete user
       tags:
-      - users
+        - users
     get:
       consumes:
-      - application/json
+        - application/json
       description: this route is used to get a user by id
       parameters:
-      - default: '"Bearer YOUR_ACCESS_TOKEN"'
-        description: Bearer Token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: string
+        - default: '"Bearer YOUR_ACCESS_TOKEN"'
+          description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          type: string
+        - description: id
+          in: path
+          name: id
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.User'
+            $ref: "#/definitions/model.User"
         "400":
           description: Bad Request
           schema:
@@ -747,34 +749,34 @@ paths:
           schema:
             type: string
       security:
-      - Bearer: []
+        - Bearer: []
       summary: get user
       tags:
-      - users
+        - users
     put:
       consumes:
-      - application/json
+        - application/json
       description: this route is used to update an existing user
       parameters:
-      - default: '"Bearer YOUR_ACCESS_TOKEN"'
-        description: Bearer Token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: user
-        in: body
-        name: user
-        required: true
-        schema:
-          $ref: '#/definitions/model.User'
+        - default: '"Bearer YOUR_ACCESS_TOKEN"'
+          description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          type: string
+        - description: id
+          in: path
+          name: id
+          required: true
+          type: string
+        - description: user
+          in: body
+          name: user
+          required: true
+          schema:
+            $ref: "#/definitions/model.User"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -789,29 +791,29 @@ paths:
           schema:
             type: string
       security:
-      - Bearer: []
+        - Bearer: []
       summary: update user
       tags:
-      - users
+        - users
   /user/{id}/disable:
     put:
       consumes:
-      - application/json
+        - application/json
       description: this route is used to delete an existing user
       parameters:
-      - default: '"Bearer YOUR_ACCESS_TOKEN"'
-        description: Bearer Token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: string
+        - default: '"Bearer YOUR_ACCESS_TOKEN"'
+          description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          type: string
+        - description: id
+          in: path
+          name: id
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -826,29 +828,29 @@ paths:
           schema:
             type: string
       security:
-      - Bearer: []
+        - Bearer: []
       summary: delete user
       tags:
-      - users
+        - users
   /user/{id}/enable:
     put:
       consumes:
-      - application/json
+        - application/json
       description: this route is used to delete an existing user
       parameters:
-      - default: '"Bearer YOUR_ACCESS_TOKEN"'
-        description: Bearer Token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: string
+        - default: '"Bearer YOUR_ACCESS_TOKEN"'
+          description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          type: string
+        - description: id
+          in: path
+          name: id
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
@@ -863,39 +865,39 @@ paths:
           schema:
             type: string
       security:
-      - Bearer: []
+        - Bearer: []
       summary: delete user
       tags:
-      - users
+        - users
   /users:
     get:
       consumes:
-      - application/json
+        - application/json
       description: this route is used to get all the users
       parameters:
-      - default: '"Bearer YOUR_ACCESS_TOKEN"'
-        description: Bearer Token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - default: 1
-        description: Page number
-        in: query
-        name: page
-        type: integer
-      - default: 10
-        description: Page size
-        in: query
-        name: size
-        type: integer
+        - default: '"Bearer YOUR_ACCESS_TOKEN"'
+          description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          type: string
+        - default: 1
+          description: Page number
+          in: query
+          name: page
+          type: integer
+        - default: 10
+          description: Page size
+          in: query
+          name: size
+          type: integer
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.PaginatedResponse'
+            $ref: "#/definitions/model.PaginatedResponse"
         "400":
           description: Bad Request
           schema:
@@ -905,51 +907,51 @@ paths:
           schema:
             type: string
       security:
-      - Bearer: []
+        - Bearer: []
       summary: get all users
       tags:
-      - users
+        - users
   /users/plans:
     get:
       consumes:
-      - application/json
+        - application/json
       description: this route is used to get all the users with their plans
       parameters:
-      - default: '"Bearer YOUR_ACCESS_TOKEN"'
-        description: Bearer Token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - default: 1
-        description: Page number
-        in: query
-        name: page
-        type: integer
-      - default: 10
-        description: Page size
-        in: query
-        name: size
-        type: integer
-      - description: Filters
-        in: query
-        name: filters
-        type: string
-      - description: Search
-        in: query
-        name: search
-        type: string
-      - description: Plan
-        in: query
-        name: plan
-        type: string
+        - default: '"Bearer YOUR_ACCESS_TOKEN"'
+          description: Bearer Token
+          in: header
+          name: Authorization
+          required: true
+          type: string
+        - default: 1
+          description: Page number
+          in: query
+          name: page
+          type: integer
+        - default: 10
+          description: Page size
+          in: query
+          name: size
+          type: integer
+        - description: Filters
+          in: query
+          name: filters
+          type: string
+        - description: Search
+          in: query
+          name: search
+          type: string
+        - description: Plan
+          in: query
+          name: plan
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.PaginatedResponse'
+            $ref: "#/definitions/model.PaginatedResponse"
         "400":
           description: Bad Request
           schema:
@@ -959,21 +961,21 @@ paths:
           schema:
             type: string
       security:
-      - Bearer: []
+        - Bearer: []
       summary: get all users with plans
       tags:
-      - users
+        - users
   /verify/{code}:
     get:
       description: this route is used to verify account
       parameters:
-      - description: verification code
-        in: path
-        name: code
-        required: true
-        type: string
+        - description: verification code
+          in: path
+          name: code
+          required: true
+          type: string
       produces:
-      - text/html
+        - text/html
       responses:
         "200":
           description: html content
@@ -981,5 +983,5 @@ paths:
             type: string
       summary: verify account
       tags:
-      - authentication
+        - authentication
 swagger: "2.0"

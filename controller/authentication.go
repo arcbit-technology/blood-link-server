@@ -241,11 +241,11 @@ func Login(req model.LoginRequest, IP string) (model.ProfileLogin, error) {
 			Please verify your account by clicking the link below: <br>
 			<a href="%s/location/trust/%s?token=%s">Verify Location</a> <br> <br>
 			Thank you, <br>
-			GOPG Server `, login.User.Firstname, config.Param.ServerBaseURL, trustCode, login.Token)
+			BloodLink Server `, login.User.Firstname, config.Param.ServerBaseURL, trustCode, login.Token)
 			mail := model.Mail{
 				ReceiverEmail: login.User.Email,
 				ReceiverName:  login.User.Firstname,
-				SUBJECT:       "GoPG Server Location Verification",
+				SUBJECT:       "BloodLink Server Location Verification",
 				BODY:          body,
 				SENDER:        config.Param.Account.MAIL_SENDER,
 				SENDER_NAME:   config.Param.Account.MAIL_SENDER_NAME,
@@ -538,7 +538,7 @@ func Register(user model.User, file model.FileRequest, IP string) (model.Registe
 		mail := model.Mail{
 			ReceiverEmail: user.Email,
 			ReceiverName:  user.Firstname,
-			SUBJECT:       "GoPgDB Account Verification",
+			SUBJECT:       "BloodLinkDB Account Verification",
 			BODY:          body,
 			SENDER:        config.Param.Account.MAIL_SENDER,
 			SENDER_NAME:   config.Param.Account.MAIL_SENDER_NAME,

@@ -220,11 +220,11 @@ func ResetPassword(userid int, sess model.Session) (interface{}, error) {
 			Your new password is: <strong>%s</strong> <br><br>
 			
 			Thank you, <br>
-			GoPgDB`, user.Firstname, randpass)
+			BloodLinkDB`, user.Firstname, randpass)
 	mail := model.Mail{
 		ReceiverEmail: user.Email,
 		ReceiverName:  user.Firstname,
-		SUBJECT:       "GoPgDB Password Reset",
+		SUBJECT:       "BloodLinkDB Password Reset",
 		BODY:          body,
 		SENDER:        config.Param.Account.MAIL_SENDER,
 		SENDER_NAME:   config.Param.Account.MAIL_SENDER_NAME,

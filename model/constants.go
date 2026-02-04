@@ -14,7 +14,7 @@ const (
 	Please verify your account by clicking the link below: <br>
 	<a href="%s">Verify Account</a> <br> <br>
 	Thank you, <br>
-	GoPgDB`
+	BloodLinkDB`
 
 	HtmlErrorVerificationPage = `<html><body><h1>Error</h1><p>%s</p></body></html>`
 	HtmlVerifiedEmailPage     = `<html><body><h1>Verified</h1><p>Hello %s, your email is verified. <a href="%s">Login here</a></p></body></html>`

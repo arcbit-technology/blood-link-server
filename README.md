@@ -58,8 +58,8 @@ The application uses a `config.json` file for configuration.
     ```
     Or build and run manually:
     ```bash
-    go build -o ./api/gopg-server
-    ./api/gopg-server
+    go build -o ./api/bloodlink-server
+    ./api/bloodlink-server
     ```
 
 ### Docker
