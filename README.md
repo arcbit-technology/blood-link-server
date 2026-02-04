@@ -1,58 +1,108 @@
-# Welcome to Blood Link
+# Go REST Starter
 
-A blood donation tracking application.
+A comprehensive Go REST API starter kit featuring authentication, database migrations, Docker support, and various utility packages. This project is designed to jumpstart your Go backend development with a solid foundation.
 
-## Project info
+### By [Md Hasib](https://github.com/mdhasib01)
 
-This project is a blood donation tracking application designed to help manage and track blood donations.
+## Features
 
-## How can I edit this code?
+- **REST API**: Built with `gorilla/mux`.
+- **Database**: PostgreSQL integration using `lib/pq`.
+- **Migrations**: Database schema management with `golang-migrate`.
+- **Authentication**:
+  - JWT support.
+  - OAuth2 integration via `goth` (Google, LinkedIn, Facebook).
+- **Documentation**: Swagger/OpenAPI documentation.
+- **Docker**: Full Docker and Docker Compose support.
+- **Utilities**:
+  - Email notifications (SMTP).
+  - GeoIP integration.
+  - WebSocket support.
+  - Cron jobs.
+  - Excel file handling.
 
-There are several ways of editing your application.
+## Prerequisites
 
-**Use your preferred IDE**
+- [Go 1.24.6+](https://go.dev/dl/)
+- [PostgreSQL](https://www.postgresql.org/)
+- [Docker](https://www.docker.com/) (optional, for containerized deployment)
 
-If you want to work locally using your own IDE, you can clone this repo and push changes.
+## Configuration
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+The application uses a `config.json` file for configuration.
 
-Follow these steps:
+1.  Create a `config.json` file in the root directory. You can use `config.docker.json` (if available) or the example below as a template.
+2.  Update the fields with your credentials (database, OAuth keys, SMTP settings, etc.).
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## Installation & Running
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### Local Development
 
-# Step 3: Install the necessary dependencies.
-npm i
+1.  **Clone the repository:**
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+    ```bash
+    git clone https://github.com/mdhasib01/go-rest-starter.git
+    cd Starter-Server
+    ```
+
+2.  **Install dependencies:**
+
+    ```bash
+    go mod download
+    ```
+
+3.  **Run the application:**
+    You can use the `Makefile` command:
+    ```bash
+    make run
+    ```
+    Or build and run manually:
+    ```bash
+    go build -o ./api/gopg-server
+    ./api/gopg-server
+    ```
+
+### Docker
+
+1.  **Build and start services:**
+    ```bash
+    docker-compose up --build -d
+    ```
+    This will start the PostgreSQL database and the Go server.
+
+## Database Migrations
+
+The project uses `golang-migrate` for database migrations.
+
+- **Run Migrations (Up):**
+  ```bash
+  make migrate-up
+  ```
+- **Rollback Migrations (Down):**
+  ```bash
+  make migrate-down
+  ```
+
+_Note: Check the `Makefile` to ensure the database connection string in the `migrate` command matches your local PostgreSQL setup._
+
+## API Documentation
+
+Swagger documentation is available. Once the server is running, you can typically access the API docs at:
+
+```
+http://localhost:8765/swagger/index.html
 ```
 
-**Edit a file directly in GitHub**
+_(Port depends on your `config.json` setting)_
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Project Structure
 
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-# blood-link-server
+- `api/`: API entry point/build artifacts.
+- `config/`: Configuration loading logic.
+- `controller/`: Request handlers and business logic.
+- `dao/`: Data Access Object layer (Database interactions).
+- `docs/`: Swagger documentation files.
+- `model/`: Data structures and models.
+- `pkg/`: Shared packages (logger, notifications, etc.).
+- `rest/`: REST API routing and middleware.
+- `utils/`: General utility functions.

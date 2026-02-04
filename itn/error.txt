@@ -1,0 +1,186 @@
+api.gopgserver.err.001: Token required.
+api.gopgserver.err.002: Something went wrong.
+api.gopgserver.err.003: User already exists.
+api.gopgserver.err.004: Invalid token.
+api.gopgserver.err.005: Invalid data.
+api.gopgserver.err.006: Name is required.
+api.gopgserver.err.007: Username is required.
+api.gopgserver.err.008: Password is required.
+api.gopgserver.err.009: Username not found.
+api.gopgserver.err.010: Invalid password.
+api.gopgserver.err.011: First name required.
+api.gopgserver.err.012: Last name required.
+api.gopgserver.err.013: Role is required.
+api.gopgserver.err.014: Username already taken.
+api.gopgserver.err.015: Email is required.
+api.gopgserver.err.016: Username must contain at least 3 characters.
+api.gopgserver.err.017: Password must contain at least 8 characters.
+api.gopgserver.err.018: Check your credentials or contact your administrator.
+api.gopgserver.err.019: Missing consultation ID.
+api.gopgserver.err.020: Missing date.
+api.gopgserver.err.021: Missing duration.
+api.gopgserver.err.022: This time slot is not free.
+api.gopgserver.err.023: Appointment not found.
+api.gopgserver.err.024: Contact not found.
+api.gopgserver.err.025: Invalid date.
+api.gopgserver.err.026: Missing generic name.
+api.gopgserver.err.027: Missing medicine ATC code.
+api.gopgserver.err.028: Prescription not found.
+api.gopgserver.err.029: Duplicate medicine ATC code.
+api.gopgserver.err.030: Medicine type is required.
+api.gopgserver.err.031: Medicine type not found.
+api.gopgserver.err.032: Medicine list type not found.
+api.gopgserver.err.033: Consultation not found.
+api.gopgserver.err.034: Care type not found.
+api.gopgserver.err.035: Bill not found.
+api.gopgserver.err.036: No fund.
+api.gopgserver.err.037: Analyses not found.
+api.gopgserver.err.038: Missing test name.
+api.gopgserver.err.039: Missing test code.
+api.gopgserver.err.040: Examination not found.
+api.gopgserver.err.041: Gynecological note not found.
+api.gopgserver.err.042: Order is already sent.
+api.gopgserver.err.043: Order has not been sent.
+api.gopgserver.err.044: Result not ready.
+api.gopgserver.err.045: Date is invalid.
+api.gopgserver.err.046: Access to Silabmed is denied.
+api.gopgserver.err.047: Access to Sysgestock is denied.
+api.gopgserver.err.048: Test code already exists.
+api.gopgserver.err.049: Care name required.
+api.gopgserver.err.050: Care code required.
+api.gopgserver.err.051: Insufficient privilege.
+api.gopgserver.err.052: Currency not found.
+api.gopgserver.err.053: Role not found.
+api.gopgserver.err.054: Unauthorized operation.
+api.gopgserver.err.055: Abbreviation required.
+api.gopgserver.err.056: Token expired.
+api.gopgserver.err.057: User not found.
+api.gopgserver.err.058: Info not found.
+api.gopgserver.err.059: Vaccine name required.
+api.gopgserver.err.060: Quantity of dose received required.
+api.gopgserver.err.061: Dosage unit required.
+api.gopgserver.err.062: Dosage required.
+api.gopgserver.err.063: Medicine not found.
+api.gopgserver.err.064: Disease not found.
+api.gopgserver.err.065: Diagnostic not found.
+api.gopgserver.err.066: Medication SKU is required.
+api.gopgserver.err.067: Succursale not found.
+api.gopgserver.err.068: Invalid field type in JSON data.
+api.gopgserver.err.069: No data submitted.
+api.gopgserver.err.070: Disease code required.
+api.gopgserver.err.071: Cannot deactivate succursale with employee.
+api.gopgserver.err.072: Doctor not found.
+api.gopgserver.err.073: Password does not match.
+api.gopgserver.err.074: Password not strong.
+api.gopgserver.err.075: Country required.
+api.gopgserver.err.076: Invalid email.
+api.gopgserver.err.077: Invalid filters.
+api.gopgserver.err.078: Invalid sort.
+api.gopgserver.err.079: Already disabled.
+api.gopgserver.err.080: Already enabled.
+api.gopgserver.err.081: Old password incorrect.
+api.gopgserver.err.082: Contact name required.
+api.gopgserver.err.083: Profile not found.
+api.gopgserver.err.084: Profile already exists.
+api.gopgserver.err.085: Currency required.
+api.gopgserver.err.086: Account not verified.
+api.gopgserver.err.087: Invalid rate.
+api.gopgserver.err.088: Cannot rate self.
+api.gopgserver.err.089: Rate not found.
+api.gopgserver.err.090: Invalid profile type.
+api.gopgserver.err.091: Room not found.
+api.gopgserver.err.092: Message not found.
+api.gopgserver.err.093: Notification not found.
+api.gopgserver.err.094: Phone required.
+api.gopgserver.err.095: Title required.
+api.gopgserver.err.096: Message required.
+api.gopgserver.err.097: Desclaimer acceptance required.
+api.gopgserver.err.098: Desclaimer identifier empty.
+api.gopgserver.err.099: Desclaimer identifier exist.
+api.gopgserver.err.100: Desclaimer not found.
+api.gopgserver.err.101: Desclaimer not accepted.
+api.gopgserver.err.102: Contract type not found.
+api.gopgserver.err.103: Contract type name required.
+api.gopgserver.err.104: Invalid base64 file.
+api.gopgserver.err.105: Contract type required.
+api.gopgserver.err.106: Contract name required.
+api.gopgserver.err.107: Contract signers required.
+api.gopgserver.err.108: Recipient name required.
+api.gopgserver.err.109: Recipient email required.
+api.gopgserver.err.110: Contract expiration date required.
+api.gopgserver.err.111: Recipient role required.
+api.gopgserver.err.112: Need to login to profile.
+api.gopgserver.err.113: Email already exists.
+api.gopgserver.err.114: Contract not found.
+api.gopgserver.err.115: Value cannot be negative.
+api.gopgserver.err.116: Occupation required.
+api.gopgserver.err.117: Contact email required.
+api.gopgserver.err.118: Duplicate signer.
+api.gopgserver.err.119: Duplicate recipient.
+api.gopgserver.err.120: File too large.
+api.gopgserver.err.121: Contract type name exists.
+api.gopgserver.err.122: Invalid status.
+api.gopgserver.err.123: Invalid job title.
+api.gopgserver.err.124: Professional domain required.
+api.gopgserver.err.125: Job description required.
+api.gopgserver.err.126: Job budget required.
+api.gopgserver.err.127: Job not found.
+api.gopgserver.err.128: Cover letter too short.
+api.gopgserver.err.129: Job closed.
+api.gopgserver.err.130: Cannot choose yourself.
+api.gopgserver.err.131: Professional not applied.
+api.gopgserver.err.132: Signer email and name required.
+api.gopgserver.err.133: Currency already exists.
+api.gopgserver.err.134: Client not connected.
+api.gopgserver.err.135: Profession required.
+api.gopgserver.err.136: Profession invalid.
+api.gopgserver.err.137: Representative id required.
+api.gopgserver.err.138: Representative not found.
+api.gopgserver.err.139: Invalid role.
+api.gopgserver.err.140: Client already connected.
+api.gopgserver.err.141: No assigned representative.
+api.gopgserver.err.142: Profession needed.
+api.gopgserver.err.143: Invalid image.
+api.gopgserver.err.144: Ip hidden.
+api.gopgserver.err.145: Entity id required in upload file.
+api.gopgserver.err.146: Entity required in upload file.
+api.gopgserver.err.147: File name required.
+api.gopgserver.err.148: Invalid entity.
+api.gopgserver.err.149: Key required.
+api.gopgserver.err.150: File type required.
+api.gopgserver.err.151: File not found.
+api.gopgserver.err.152: Invalid file type.
+api.gopgserver.err.153: File already exists.
+api.gopgserver.err.154: Note content required.
+api.gopgserver.err.155: Note title required.
+api.gopgserver.err.156: Invalid authorized party.
+api.gopgserver.err.157: Key of file is empty.
+api.gopgserver.err.158: Unsupported file type.
+api.gopgserver.err.159: Note not found.
+api.gopgserver.err.160: Owner name required.
+api.gopgserver.err.161: Owner type required.
+api.gopgserver.err.162: Owner type invalid.
+api.gopgserver.err.163: Owner equity invalid.
+api.gopgserver.err.164: Owner equity sum invalid.
+api.gopgserver.err.165: Files limit reached.
+api.gopgserver.err.166: No representative available.
+api.gopgserver.err.167: File size limit exceed.
+api.gopgserver.err.168: Invalid subinterest format.
+api.gopgserver.err.169: Invalid media type format.
+api.gopgserver.err.170: Invalid workflow name format.
+api.gopgserver.err.171: Invalid work flow category.
+api.gopgserver.err.172: Invalid work flow node type.
+api.gopgserver.err.173: Work flow id required.
+api.gopgserver.err.174: Workflow node position required.
+api.gopgserver.err.175: Work flow node required.
+api.gopgserver.err.176: Work flow node rule type required.
+api.gopgserver.err.177: Invalid work flow node rule type.
+api.gopgserver.err.178: Work flow node rule name required.
+api.gopgserver.err.179: Work flow node rule parent node id required.
+api.gopgserver.err.180: Invalid work flow node rule type.
+api.gopgserver.err.181: Work flow node rule parent node id required.
+api.gopgserver.err.182: Invalid work flow node rule type.
+api.gopgserver.err.183: Error creating partner profile.
+api.gopgserver.err.184: Buyer type did not matched.
+api.gopgserver.err.185: Error getting seller Profile.
+api.gopgserver.err.186: Profession does not exist.

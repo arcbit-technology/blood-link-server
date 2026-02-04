@@ -1,0 +1,985 @@
+definitions:
+  model.ChangePassword:
+    properties:
+      newpassword:
+        type: string
+      oldpassword:
+        type: string
+    type: object
+  model.ChangeTempPassword:
+    properties:
+      confirmpassword:
+        type: string
+      password:
+        type: string
+    type: object
+  model.ForgotPasswordRequest:
+    properties:
+      email:
+        type: string
+    type: object
+  model.ForgotPasswordResponse:
+    properties:
+      message:
+        type: string
+      newpassword:
+        type: string
+    type: object
+  model.Login:
+    properties:
+      evaluation_used:
+        type: integer
+      lastlogin:
+        type: string
+      plan:
+        type: string
+      role:
+        $ref: '#/definitions/model.Role'
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/model.User'
+    type: object
+  model.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  model.PaginatedResponse:
+    properties:
+      data: {}
+      page:
+        type: integer
+      size:
+        type: integer
+      total_count:
+        type: integer
+    type: object
+  model.Permission:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  model.ProfileLogin:
+    properties:
+      evaluation_used:
+        type: integer
+      lastlogin:
+        type: string
+      loggedinprofileid:
+        type: integer
+      loggedinprofiletype:
+        type: string
+      plan:
+        type: string
+      role:
+        $ref: '#/definitions/model.Role'
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/model.User'
+    type: object
+  model.RegisterResponse:
+    properties:
+      message:
+        type: string
+      user:
+        $ref: '#/definitions/model.User'
+    type: object
+  model.Role:
+    properties:
+      createdAt:
+        type: string
+      createdBy:
+        type: integer
+      description:
+        type: string
+      id:
+        type: integer
+      isdeleted:
+        type: boolean
+      name:
+        type: string
+      permission:
+        items:
+          $ref: '#/definitions/model.Permission'
+        type: array
+      updatedAt:
+        type: string
+      updatedBy:
+        type: integer
+    type: object
+  model.User:
+    properties:
+      address:
+        type: string
+      city:
+        type: string
+      confirmpassword:
+        type: string
+      country:
+        type: string
+      createdat:
+        type: string
+      createdby:
+        type: integer
+      district:
+        type: string
+      division:
+        type: string
+      email:
+        type: string
+      firstname:
+        type: string
+      id:
+        type: integer
+      idrole:
+        type: integer
+      isactive:
+        type: boolean
+      ispasswordtemporary:
+        type: boolean
+      isverified:
+        type: boolean
+      lastlogin:
+        type: string
+      lastname:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+      profession:
+        type: string
+      role:
+        type: string
+      updatedat:
+        type: string
+      updatedby:
+        type: integer
+      username:
+        type: string
+      verificationcode:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /auth/{provider}:
+    get:
+      description: that route is use to authenticate with social media
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "403":
+          description: Forbidden
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: social auth
+      tags:
+      - authentication
+  /auth/{provider}/callback:
+    get:
+      description: that route is use to authenticate with social media
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Login'
+        "403":
+          description: Forbidden
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: social auth callback
+      tags:
+      - authentication
+  /auth/fetchlogindata:
+    get:
+      consumes:
+      - application/json
+      description: that route is use to fetch login data
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Login'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "403":
+          description: Forbidden
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: fetch login data
+      tags:
+      - authentication
+  /changepassword/{id}:
+    put:
+      consumes:
+      - application/json
+      description: this route is used to change or reset password of the user
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: change password request
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.ChangePassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: update user
+      tags:
+      - users
+  /changetemppassword:
+    put:
+      consumes:
+      - application/json
+      description: this route is used to change the temporary password of the user
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: change password request
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.ChangeTempPassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Login'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "403":
+          description: Forbidden
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: update user password
+      tags:
+      - users
+  /forgotpassword:
+    post:
+      consumes:
+      - application/json
+      description: that route is use to send an email to the user with a temporary
+        password
+      parameters:
+      - description: Request body containing user email
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.ForgotPasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ForgotPasswordResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: forgot password
+      tags:
+      - authentication
+  /iftokenvalid:
+    get:
+      description: this route is used to check if the token is valid
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: boolean
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: check if token is valid
+      tags:
+      - authentication
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: that route is use to log into the app
+      parameters:
+      - description: auth
+        in: body
+        name: auth
+        required: true
+        schema:
+          $ref: '#/definitions/model.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Login'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: log into the app
+      tags:
+      - authentication
+  /login/{profiletype}:
+    get:
+      consumes:
+      - application/json
+      description: that route is use to log into profile
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: profiletype
+        in: path
+        name: profiletype
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ProfileLogin'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "403":
+          description: Forbidden
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: log into profile
+      tags:
+      - authentication
+  /logout:
+    put:
+      consumes:
+      - application/json
+      description: that route is use to log out the app
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: log out the app
+      tags:
+      - authentication
+  /myip:
+    get:
+      description: this route is used to get the ip address of the requester
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: get requester ip
+      tags:
+      - system
+  /ping:
+    get:
+      description: this route is used to check if the api is running
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: GoPg Server API is listening
+          schema:
+            type: string
+      summary: check api status
+      tags:
+      - system
+  /profilecomplete:
+    get:
+      consumes:
+      - application/json
+      description: this route is used to get the profile complete percentage of the
+        user
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: get profile complete percentage
+      tags:
+      - users
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: that route is use to register a new user
+      parameters:
+      - description: Request body containing user registration information
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.RegisterResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "403":
+          description: Forbidden
+          schema:
+            type: string
+        "409":
+          description: Conflict
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: register a new user
+      tags:
+      - authentication
+  /resetpassword/{id}:
+    put:
+      consumes:
+      - application/json
+      description: this route is used to change or reset password of the user
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: change password request
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.ChangePassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: update user
+      tags:
+      - users
+  /user:
+    post:
+      consumes:
+      - application/json
+      description: this route is used to create a new user
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: user
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: create user
+      tags:
+      - users
+  /user/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: this route is used to delete an existing user
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: boolean
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: delete user
+      tags:
+      - users
+    get:
+      consumes:
+      - application/json
+      description: this route is used to get a user by id
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: get user
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: this route is used to update an existing user
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: user
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: boolean
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: update user
+      tags:
+      - users
+  /user/{id}/disable:
+    put:
+      consumes:
+      - application/json
+      description: this route is used to delete an existing user
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: boolean
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: delete user
+      tags:
+      - users
+  /user/{id}/enable:
+    put:
+      consumes:
+      - application/json
+      description: this route is used to delete an existing user
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: boolean
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: delete user
+      tags:
+      - users
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: this route is used to get all the users
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Page size
+        in: query
+        name: size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.PaginatedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: get all users
+      tags:
+      - users
+  /users/plans:
+    get:
+      consumes:
+      - application/json
+      description: this route is used to get all the users with their plans
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Page size
+        in: query
+        name: size
+        type: integer
+      - description: Filters
+        in: query
+        name: filters
+        type: string
+      - description: Search
+        in: query
+        name: search
+        type: string
+      - description: Plan
+        in: query
+        name: plan
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.PaginatedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: get all users with plans
+      tags:
+      - users
+  /verify/{code}:
+    get:
+      description: this route is used to verify account
+      parameters:
+      - description: verification code
+        in: path
+        name: code
+        required: true
+        type: string
+      produces:
+      - text/html
+      responses:
+        "200":
+          description: html content
+          schema:
+            type: string
+      summary: verify account
+      tags:
+      - authentication
+swagger: "2.0"

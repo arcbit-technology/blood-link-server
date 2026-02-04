@@ -1,0 +1,36 @@
+version: "3"
+
+services:
+  server:
+    image: gopg-server
+    container_name: gopg-server
+    build:
+      dockerfile: Dockerfile
+      context: .
+    depends_on:
+      - postgres
+    ports:
+      - "8787:8080"
+    networks:
+      - my-network
+
+  postgres:
+    image: postgres:16.0
+    container_name: postgres
+    ports:
+      - "5400:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: GoPgDB
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - my-network
+    hostname: postgreshost
+volumes:
+  postgres-data:
+
+networks:
+  my-network:
+    external: true
