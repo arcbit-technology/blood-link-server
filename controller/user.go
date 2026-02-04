@@ -165,10 +165,6 @@ func GetAllUsers(session model.Session, fr model.FilteredRequest) (model.Paginat
 	return dao.GetAllUsers(fr)
 }
 
-func GetAllUsersWithPlan(session model.Session, fr model.FilteredRequest) (model.PaginatedResponse, error) {
-	return dao.GetAllUsersWithPlan(session, fr)
-}
-
 func ChangePassword(userid int, oldpassword, newpassword string, sess model.Session) (bool, error) {
 	if userid != sess.UserId {
 		return false, model.NewError(itn.ErrorUnauthorizedOperation, 403)

@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"strings"
 
 	itn "github.com/mdhasib01/go-rest-starter/itn"
 	model "github.com/mdhasib01/go-rest-starter/model"
@@ -215,96 +214,6 @@ func GetBuyerProfileCompletePercentage(session model.Session) (int, error) {
 
 func GetSellerProfileCompletePercentage(session model.Session) (int, error) {
 	return 100, nil
-}
-
-func GetAllUsersWithPlan(session model.Session, fr model.FilteredRequest) (model.PaginatedResponse, error) {
-	var list []model.UserWithPlan
-	query := `SELECT
-  u.id                            AS user_id,
-  u.firstname,
-  u.lastname,
-  u.email                         AS email,
-  COALESCE(p.name, 'free')        AS plan
-FROM users u
-LEFT JOIN LATERAL (
-  SELECT *
-  FROM subscriptions s
-  WHERE s.user_id = u.id
-  ORDER BY (s.is_active::int) DESC, s.start_date DESC, s.created_at DESC
-  LIMIT 1
-) AS sub ON true
-LEFT JOIN plans p ON p.id = sub.plan_id WHERE 1=1`
-
-	args := []interface{}{}
-
-	if fr.Search != "" {
-		args = append(args, "%"+fr.Search+"%")
-		query += fmt.Sprintf(" AND (u.firstname ILIKE $%d OR u.lastname ILIKE $%d OR u.email ILIKE $%d)", len(args), len(args), len(args))
-	}
-
-	if fr.Plan != "" {
-		if strings.ToLower(fr.Plan) == "free" {
-			query += " AND p.name IS NULL"
-		} else {
-			args = append(args, fr.Plan)
-			query += fmt.Sprintf(" AND p.name = $%d", len(args))
-		}
-	}
-
-	if fr.OrderParams == "" {
-		fr.OrderParams = "id:asc"
-		fr.AllowedOrderParams = append(fr.AllowedOrderParams, "id")
-	}
-
-	var err error
-	query, args, err = buildFilteredQuery(query, fr, args, "u")
-	if err != nil {
-		return model.PaginatedResponse{}, err
-	}
-
-	rows, err := DB.Query(query, args...)
-	if err != nil {
-		logger.GetLogger().LogErrors(err, map[string]interface{}{
-			"query": query,
-		})
-		return model.PaginatedResponse{}, model.UnknownError
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var row model.UserWithPlan
-		err = rows.Scan(&row.UserId, &row.Firstname, &row.Lastname, &row.Email, &row.Plan)
-		if err != nil {
-			logger.GetLogger().LogErrors(err, nil)
-			return model.PaginatedResponse{}, model.UnknownError
-		}
-		list = append(list, row)
-	}
-
-	var count int
-	countQuery := query
-	upper := strings.ToUpper(countQuery)
-	idx := strings.LastIndex(upper, " LIMIT ")
-	if idx != -1 {
-		countQuery = countQuery[:idx]
-		upper = strings.ToUpper(countQuery)
-	}
-	idx = strings.LastIndex(upper, " OFFSET ")
-	if idx != -1 {
-		countQuery = countQuery[:idx]
-	}
-
-	countQuery = "SELECT COUNT(*) FROM (" + countQuery + ") AS t"
-	argsCnt := strings.Count(countQuery, "$")
-	err = DB.QueryRow(countQuery, args[:argsCnt]...).Scan(&count)
-	if err != nil {
-		logger.GetLogger().LogErrors(err, map[string]interface{}{
-			"query": countQuery,
-		})
-		return model.PaginatedResponse{}, err
-	}
-
-	return model.PaginatedResponse{Data: list, Count: count}, nil
 }
 
 func GetUser(id int, s model.Session) (model.User, error) {

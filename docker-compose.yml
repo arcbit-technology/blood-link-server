@@ -1,12 +1,10 @@
-version: "3"
-
 services:
   server:
     image: bloodlink-server
     container_name: bloodlink-server
     build:
-      dockerfile: Dockerfile
       context: .
+      dockerfile: Dockerfile
     depends_on:
       - postgres
     ports:
@@ -15,10 +13,10 @@ services:
       - my-network
 
   postgres:
-    image: postgres:16.0
+    image: postgres:16
     container_name: bloodlink-postgres
     ports:
-      - "5400:5432"
+      - "5500:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -28,9 +26,9 @@ services:
     networks:
       - my-network
     hostname: postgreshost
+
 volumes:
   postgres-data:
 
 networks:
   my-network:
-    external: true

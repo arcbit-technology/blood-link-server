@@ -46,11 +46,14 @@ func router() *mux.Router {
 	router.Methods("POST").Path("/user").Name("createUser").HandlerFunc(CreateUser)
 	router.Methods("PUT").Path("/user/{id:[0-9]+}").Name("updateUser").HandlerFunc(UpdateUser)
 	router.Methods("GET").Path("/users").Name("getUsers").HandlerFunc(GetAllUsers)
-	router.Methods("GET").Path("/users/plans").Name("getUsersPlans").HandlerFunc(GetAllUsersPlans)
 	router.Methods("GET").Path("/user/{id:[0-9]+}").Name("getAllUsers").HandlerFunc(GetUser)
 	router.Methods("DELETE").Path("/user/{id:[0-9]+}").Name("deleteUSer").HandlerFunc(DeleteUser)
 	router.Methods("PUT").Path("/user/{id:[0-9]+}/disable").Name("disable user").HandlerFunc(ToggleUserStatus)
 	router.Methods("PUT").Path("/user/{id:[0-9]+}/enable").Name("enable user").HandlerFunc(ToggleUserStatus)
+
+	// Locations
+	router.Methods("GET").Path("/divisions").Name("getDivisions").HandlerFunc(GetDivisions)
+	router.Methods("GET").Path("/districts").Name("getDistricts").HandlerFunc(GetDistricts)
 
 	//role
 	// router.Methods("POST").Path("/role").Name("CreateRole").HandlerFunc(CreateRole)

@@ -273,47 +273,6 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	JSON(w, set, err)
 }
 
-// GetAllUsersPlans godoc
-// @Summary get all users with plans
-// @Description this route is used to get all the users with their plans
-// @Tags users
-// @Accept  json
-// @Produce  json
-// @Security Bearer
-// @Param Authorization header string true "Bearer Token" default("Bearer YOUR_ACCESS_TOKEN")
-// @Param page query int false "Page number" default(1)
-// @Param size query int false "Page size" default(10)
-// @Param filters query string false "Filters"
-// @Param search query string false "Search"
-// @Param plan query string false "Plan"
-// @Success 200 {object} model.PaginatedResponse
-// @Failure 400 {string} string
-// @Failure 500 {string} string
-// @Router /users/plans [get]
-func GetAllUsersPlans(w http.ResponseWriter, r *http.Request) {
-	session, err := isAuthorized(r, 0)
-	if err != nil {
-		JSON(w, nil, err)
-		return
-	}
-
-	var fr model.FilteredRequest
-	fr.Page, _ = strconv.Atoi(r.URL.Query().Get("page"))
-	fr.Size, _ = strconv.Atoi(r.URL.Query().Get("size"))
-	fr.Filters = r.URL.Query().Get("filters")
-	fr.Search = r.URL.Query().Get("search")
-	fr.Plan = r.URL.Query().Get("plan")
-
-	fr.AllowedFilters = []string{
-		"firstname",
-		"lastname",
-		"email",
-	}
-
-	set, err := controller.GetAllUsersWithPlan(session, fr)
-	JSON(w, set, err)
-}
-
 // ChangePassword godoc
 // @Summary update user
 // @Description this route is used to change or reset password of the user

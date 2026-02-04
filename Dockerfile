@@ -15,7 +15,6 @@ WORKDIR /app/
 
 COPY --from=build_stage /app/api ./api/
 COPY --from=build_stage /app/dao ./dao/
-COPY --from=build_stage /app/config.docker.json ./api/config.json
 
 EXPOSE 8080
 
