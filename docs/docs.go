@@ -17,11 +17,6 @@ const docTemplate = `{
     "paths": {
         "/auth/fetchlogindata": {
             "get": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
                 "description": "that route is use to fetch login data",
                 "consumes": [
                     "application/json"
@@ -68,7 +63,12 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
             }
         },
         "/auth/{provider}": {
@@ -137,11 +137,6 @@ const docTemplate = `{
         },
         "/changepassword/{id}": {
             "put": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
                 "description": "this route is used to change or reset password of the user",
                 "consumes": [
                     "application/json"
@@ -198,16 +193,16 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
-                }
-            }
-        },
-        "/changetemppassword": {
-            "put": {
+                },
                 "security": [
                     {
                         "Bearer": []
                     }
-                ],
+                ]
+            }
+        },
+        "/changetemppassword": {
+            "put": {
                 "description": "this route is used to change the temporary password of the user",
                 "consumes": [
                     "application/json"
@@ -263,7 +258,12 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
             }
         },
         "/forgotpassword": {
@@ -314,11 +314,6 @@ const docTemplate = `{
         },
         "/iftokenvalid": {
             "get": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
                 "description": "this route is used to check if the token is valid",
                 "produces": [
                     "application/json"
@@ -356,7 +351,12 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
             }
         },
         "/login": {
@@ -407,11 +407,6 @@ const docTemplate = `{
         },
         "/login/{profiletype}": {
             "get": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
                 "description": "that route is use to log into profile",
                 "consumes": [
                     "application/json"
@@ -465,16 +460,16 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
-                }
-            }
-        },
-        "/logout": {
-            "put": {
+                },
                 "security": [
                     {
                         "Bearer": []
                     }
-                ],
+                ]
+            }
+        },
+        "/logout": {
+            "put": {
                 "description": "that route is use to log out the app",
                 "consumes": [
                     "application/json"
@@ -515,7 +510,12 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
             }
         },
         "/myip": {
@@ -563,11 +563,6 @@ const docTemplate = `{
         },
         "/profilecomplete": {
             "get": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
                 "description": "this route is used to get the profile complete percentage of the user",
                 "consumes": [
                     "application/json"
@@ -608,7 +603,12 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
             }
         },
         "/register": {
@@ -671,11 +671,6 @@ const docTemplate = `{
         },
         "/resetpassword/{id}": {
             "put": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
                 "description": "this route is used to change or reset password of the user",
                 "consumes": [
                     "application/json"
@@ -732,16 +727,16 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
-                }
-            }
-        },
-        "/user": {
-            "post": {
+                },
                 "security": [
                     {
                         "Bearer": []
                     }
-                ],
+                ]
+            }
+        },
+        "/user": {
+            "post": {
                 "description": "this route is used to create a new user",
                 "consumes": [
                     "application/json"
@@ -791,16 +786,16 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
-                }
-            }
-        },
-        "/user/{id}": {
-            "get": {
+                },
                 "security": [
                     {
                         "Bearer": []
                     }
-                ],
+                ]
+            }
+        },
+        "/user/{id}": {
+            "get": {
                 "description": "this route is used to get a user by id",
                 "consumes": [
                     "application/json"
@@ -848,14 +843,14 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
-                }
-            },
-            "put": {
+                },
                 "security": [
                     {
                         "Bearer": []
                     }
-                ],
+                ]
+            },
+            "put": {
                 "description": "this route is used to update an existing user",
                 "consumes": [
                     "application/json"
@@ -912,14 +907,14 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
-                }
-            },
-            "delete": {
+                },
                 "security": [
                     {
                         "Bearer": []
                     }
-                ],
+                ]
+            },
+            "delete": {
                 "description": "this route is used to delete an existing user",
                 "consumes": [
                     "application/json"
@@ -967,16 +962,16 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
             }
         },
         "/user/{id}/disable": {
             "put": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
                 "description": "this route is used to delete an existing user",
                 "consumes": [
                     "application/json"
@@ -1024,16 +1019,16 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
             }
         },
         "/user/{id}/enable": {
             "put": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
                 "description": "this route is used to delete an existing user",
                 "consumes": [
                     "application/json"
@@ -1081,16 +1076,16 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
-                }
-            }
-        },
-        "/users": {
-            "get": {
+                },
                 "security": [
                     {
                         "Bearer": []
                     }
-                ],
+                ]
+            }
+        },
+        "/users": {
+            "get": {
                 "description": "this route is used to get all the users",
                 "consumes": [
                     "application/json"
@@ -1145,89 +1140,12 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
-                }
-            }
-        },
-        "/users/plans": {
-            "get": {
+                },
                 "security": [
                     {
                         "Bearer": []
                     }
-                ],
-                "description": "this route is used to get all the users with their plans",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "get all users with plans",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "\"Bearer YOUR_ACCESS_TOKEN\"",
-                        "description": "Bearer Token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "default": 1,
-                        "description": "Page number",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "default": 10,
-                        "description": "Page size",
-                        "name": "size",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Filters",
-                        "name": "filters",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Search",
-                        "name": "search",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Plan",
-                        "name": "plan",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.PaginatedResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
+                ]
             }
         },
         "/verify/{code}": {
@@ -1264,10 +1182,10 @@ const docTemplate = `{
         "model.ChangePassword": {
             "type": "object",
             "properties": {
-                "newpassword": {
+                "new_password": {
                     "type": "string"
                 },
-                "oldpassword": {
+                "old_password": {
                     "type": "string"
                 }
             }
@@ -1275,7 +1193,7 @@ const docTemplate = `{
         "model.ChangeTempPassword": {
             "type": "object",
             "properties": {
-                "confirmpassword": {
+                "confirm_password": {
                     "type": "string"
                 },
                 "password": {
@@ -1297,7 +1215,7 @@ const docTemplate = `{
                 "message": {
                     "type": "string"
                 },
-                "newpassword": {
+                "new_password": {
                     "type": "string"
                 }
             }
@@ -1308,7 +1226,7 @@ const docTemplate = `{
                 "evaluation_used": {
                     "type": "integer"
                 },
-                "lastlogin": {
+                "last_login": {
                     "type": "string"
                 },
                 "plan": {
@@ -1328,10 +1246,10 @@ const docTemplate = `{
         "model.LoginRequest": {
             "type": "object",
             "properties": {
-                "password": {
+                "email": {
                     "type": "string"
                 },
-                "email": {
+                "password": {
                     "type": "string"
                 }
             }
@@ -1371,13 +1289,13 @@ const docTemplate = `{
                 "evaluation_used": {
                     "type": "integer"
                 },
-                "lastlogin": {
+                "last_login": {
                     "type": "string"
                 },
-                "loggedinprofileid": {
+                "logged_in_profile_id": {
                     "type": "integer"
                 },
-                "loggedinprofiletype": {
+                "logged_in_profile_type": {
                     "type": "string"
                 },
                 "plan": {
@@ -1408,10 +1326,10 @@ const docTemplate = `{
         "model.Role": {
             "type": "object",
             "properties": {
-                "createdAt": {
+                "created_at": {
                     "type": "string"
                 },
-                "createdBy": {
+                "created_by": {
                     "type": "integer"
                 },
                 "description": {
@@ -1420,22 +1338,22 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
-                "isdeleted": {
+                "is_deleted": {
                     "type": "boolean"
                 },
                 "name": {
                     "type": "string"
                 },
-                "permission": {
+                "permissions": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/model.Permission"
                     }
                 },
-                "updatedAt": {
+                "updated_at": {
                     "type": "string"
                 },
-                "updatedBy": {
+                "updated_by": {
                     "type": "integer"
                 }
             }
@@ -1443,25 +1361,22 @@ const docTemplate = `{
         "model.User": {
             "type": "object",
             "properties": {
-                "gender": {
-                    "type": "string"
-                },
                 "address": {
                     "type": "string"
                 },
                 "city": {
                     "type": "string"
                 },
-                "confirmpassword": {
+                "confirm_password": {
                     "type": "string"
                 },
                 "country": {
                     "type": "string"
                 },
-                "createdat": {
+                "created_at": {
                     "type": "string"
                 },
-                "createdby": {
+                "created_by": {
                     "type": "integer"
                 },
                 "district": {
@@ -1470,34 +1385,40 @@ const docTemplate = `{
                 "division": {
                     "type": "string"
                 },
+                "donated_at": {
+                    "type": "string"
+                },
                 "email": {
                     "type": "string"
                 },
-                "firstname": {
+                "first_name": {
                     "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "hide_personal_info": {
+                    "type": "boolean"
                 },
                 "id": {
                     "type": "integer"
                 },
-                "idrole": {
+                "id_role": {
                     "type": "integer"
                 },
-                "isavailable": {
+                "is_available": {
                     "type": "boolean"
                 },
-                "ispasswordtemporary": {
+                "is_password_temporary": {
                     "type": "boolean"
                 },
-                "isverified": {
+                "is_verified": {
                     "type": "boolean"
                 },
-                "lastlogin": {
+                "last_login": {
                     "type": "string"
                 },
-                "donatedat": {
-                    "type": "string"
-                },
-                "lastname": {
+                "last_name": {
                     "type": "string"
                 },
                 "password": {
@@ -1512,16 +1433,13 @@ const docTemplate = `{
                 "role": {
                     "type": "string"
                 },
-                "updatedat": {
+                "updated_at": {
                     "type": "string"
                 },
-                "updatedby": {
+                "updated_by": {
                     "type": "integer"
                 },
-                "hidepersonalinfo": {
-                    "type": "boolean"
-                },
-                "verificationcode": {
+                "verification_code": {
                     "type": "string"
                 }
             }

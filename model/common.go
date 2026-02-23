@@ -7,10 +7,10 @@ type FilteredRequest struct {
 	Page               int      `json:"page"`
 	Size               int      `json:"size"`
 	Plan               string   `json:"plan"`
-	OrderParams        string   `json:"orderparams"`
-	AllowedOrderParams []string `json:"allowedorderparams"`
+	OrderParams        string   `json:"order_params"`
+	AllowedOrderParams []string `json:"allowed_order_params"`
 	Filters            string   `json:"filters"`
-	AllowedFilters     []string `json:"allowedfilters"`
+	AllowedFilters     []string `json:"allowed_filters"`
 }
 
 type PaginatedResponse struct {
@@ -23,15 +23,15 @@ type PaginatedResponse struct {
 type Location struct {
 	ID           int       `json:"id,omitempty"`
 	Country      string    `json:"country,omitempty"`
-	CountryGeoID int       `json:"countryGeoID,omitempty"`
+	CountryGeoID int       `json:"country_geo_id,omitempty"`
 	City         string    `json:"city,omitempty"`
-	CityGeoID    int       `json:"cityGeoID,omitempty"`
-	IsTrusted    bool      `json:"isTrusted"`
-	TrustCode    string    `json:"trustCode,omitempty"`
-	UserID       int       `json:"userID,omitempty"`
-	CreatedAt    time.Time `json:"createdAt,omitempty"`
-	UpdatedAt    time.Time `json:"updatedAt,omitempty"`
-	UpdatedBy    int       `json:"updatedBy,omitempty"`
+	CityGeoID    int       `json:"city_geo_id,omitempty"`
+	IsTrusted    bool      `json:"is_trusted"`
+	TrustCode    string    `json:"trust_code,omitempty"`
+	UserID       int       `json:"user_id,omitempty"`
+	CreatedAt    time.Time `json:"created_at,omitempty"`
+	UpdatedAt    time.Time `json:"updated_at,omitempty"`
+	UpdatedBy    int       `json:"updated_by,omitempty"`
 }
 
 type BloodGropu string

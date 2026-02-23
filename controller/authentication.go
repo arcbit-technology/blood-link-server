@@ -115,6 +115,49 @@ func validateToken(token string) (bool, jwt.MapClaims) {
 func readToken(claims jwt.Claims) (model.Session, error) {
 
 	var session model.Session
+	if c, ok := claims.(jwt.MapClaims); ok {
+		if _, exists := c["user_id"]; !exists {
+			if v, ok := c["iduser"]; ok {
+				c["user_id"] = v
+			}
+		}
+		if _, exists := c["role_id"]; !exists {
+			if v, ok := c["idrole"]; ok {
+				c["role_id"] = v
+			}
+		}
+		if _, exists := c["created_at"]; !exists {
+			if v, ok := c["createdat"]; ok {
+				c["created_at"] = v
+			}
+		}
+		if _, exists := c["expire_at"]; !exists {
+			if v, ok := c["expireat"]; ok {
+				c["expire_at"] = v
+			}
+		}
+		if _, exists := c["iso_country"]; !exists {
+			if v, ok := c["isocountry"]; ok {
+				c["iso_country"] = v
+			}
+		}
+		if _, exists := c["buyer_profile_id"]; !exists {
+			if v, ok := c["buyerprofileid"]; ok {
+				c["buyer_profile_id"] = v
+			}
+		}
+		if _, exists := c["seller_profile_id"]; !exists {
+			if v, ok := c["sellerprofileid"]; ok {
+				c["seller_profile_id"] = v
+			}
+		}
+		if _, exists := c["logged_in_profile_id"]; !exists {
+			if v, ok := c["loggedinprofileid"]; ok {
+				c["logged_in_profile_id"] = v
+			}
+		}
+	}
+
 	b, err := json.Marshal(claims)
 	if err != nil {
 		return model.Session{}, fmt.Errorf(itn.ErrorTokenInvalid)
@@ -129,14 +172,14 @@ func readToken(claims jwt.Claims) (model.Session, error) {
 func createToken(session model.Session) (string, model.Session) {
 	claims := jwt.MapClaims{}
 	claims["authorized"] = true
-	claims["iduser"] = session.UserId
-	claims["idrole"] = session.RoleId
-	claims["createdat"] = time.Now()
-	claims["expireat"] = time.Now().Add(time.Hour * 1)
-	claims["isocountry"] = session.ISOCountry
-	claims["buyerprofileid"] = session.BuyerProfileId
-	claims["sellerprofileid"] = session.SellerProfileId
-	claims["loggedinprofileid"] = session.LoggedInProfileId
+	claims["user_id"] = session.UserId
+	claims["role_id"] = session.RoleId
+	claims["created_at"] = time.Now()
+	claims["expire_at"] = time.Now().Add(time.Hour * 1)
+	claims["iso_country"] = session.ISOCountry
+	claims["buyer_profile_id"] = session.BuyerProfileId
+	claims["seller_profile_id"] = session.SellerProfileId
+	claims["logged_in_profile_id"] = session.LoggedInProfileId
 	session.CreatedAt = time.Now()
 	session.ExpirationDate = time.Now().Add(time.Hour)
 	session.IsValid = true

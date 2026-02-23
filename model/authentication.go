@@ -11,19 +11,19 @@ type Permissione struct {
 	Name string `json:"name"`
 }
 type Session struct {
-	Id                int       `json:"code"`
+	Id                int       `json:"id"`
 	Token             string    `json:"token"`
-	RoleId            int       `json:"idrole"`
-	UserId            int       `json:"iduser"`
-	BuyerProfileId    int       `json:"buyerprofileid"`
-	SellerProfileId   int       `json:"sellerprofileid"`
-	LoggedInProfileId int       `json:"loggedinprofileid"`
-	IsValid           bool      `json:"isvalid"`
-	LastUsed          string    `json:"lastused"`
-	CreatedAt         time.Time `json:"createdat"`
+	RoleId            int       `json:"role_id"`
+	UserId            int       `json:"user_id"`
+	BuyerProfileId    int       `json:"buyer_profile_id"`
+	SellerProfileId   int       `json:"seller_profile_id"`
+	LoggedInProfileId int       `json:"logged_in_profile_id"`
+	IsValid           bool      `json:"is_valid"`
+	LastUsed          string    `json:"last_used"`
+	CreatedAt         time.Time `json:"created_at"`
 	Currency          string    `json:"currency"`
-	ExpirationDate    time.Time `json:"expireat"`
-	ISOCountry        string    `json:"isocountry"`
+	ExpirationDate    time.Time `json:"expire_at"`
+	ISOCountry        string    `json:"iso_country"`
 }
 
 type LoginRequest struct {
@@ -34,7 +34,7 @@ type LoginRequest struct {
 type Login struct {
 	User           User      `json:"user"`
 	Role           Role      `json:"role"`
-	LastLogin      time.Time `json:"lastlogin"`
+	LastLogin      time.Time `json:"last_login"`
 	Plan           string    `json:"plan"`
 	EvaluationUsed int       `json:"evaluation_used"`
 
@@ -43,15 +43,15 @@ type Login struct {
 
 type ProfileLogin struct {
 	Login
-	LoggedInProfileType string `json:"loggedinprofiletype,omitempty"`
-	LoggedInProfileId   int    `json:"loggedinprofileid,omitempty"`
+	LoggedInProfileType string `json:"logged_in_profile_type,omitempty"`
+	LoggedInProfileId   int    `json:"logged_in_profile_id,omitempty"`
 }
 
 type RegisterRequest struct {
-	Firstname       string                `json:"firstname"`
-	Lastname        string                `json:"lastname"`
+	Firstname       string                `json:"first_name"`
+	Lastname        string                `json:"last_name"`
 	Password        data.HiddenJsonString `json:"password"`
-	ConfirmPassword string                `json:"confirmpassword"`
+	ConfirmPassword string                `json:"confirm_password"`
 	Email           string                `json:"email"`
 	Phone           string                `json:"phone"`
 	City            string                `json:"city"`
@@ -71,5 +71,5 @@ type ForgotPasswordRequest struct {
 
 type ForgotPasswordResponse struct {
 	Message     string                `json:"message"`
-	NewPassword data.HiddenJsonString `json:"newpassword"`
+	NewPassword data.HiddenJsonString `json:"new_password"`
 }

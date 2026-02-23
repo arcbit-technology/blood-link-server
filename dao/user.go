@@ -32,7 +32,7 @@ func CreateUser(user *model.User) error {
 }
 
 func createRepresentative(tx *sql.Tx, user model.User) error {
-	query := `INSERT INTO representative (user_id, createdby) VALUES ($1, $2);`
+	query := `INSERT INTO representative (user_id, created_by) VALUES ($1, $2);`
 	// TODO: check representative extra data
 	_, err := tx.Exec(query, user.Id, user.CreatedBy)
 	if err != nil {
@@ -47,7 +47,7 @@ func createRepresentative(tx *sql.Tx, user model.User) error {
 }
 
 func createProfessional(tx *sql.Tx, user model.User) error {
-	query := `INSERT INTO professional (user_id, profession, createdby) VALUES ($1, $2, $3);`
+	query := `INSERT INTO professional (user_id, profession, created_by) VALUES ($1, $2, $3);`
 
 	_, err := tx.Exec(query, user.Id, user.Profession, user.CreatedBy)
 	if err != nil {
@@ -62,11 +62,11 @@ func createProfessional(tx *sql.Tx, user model.User) error {
 
 func createUser(user *model.User, tx *sql.Tx) error {
 	query := `Insert into users (
-		firstname, lastname, password, phone, address,
-		email, city, id_role, country, created_by, verification_code, is_password_temporary, isverified, hide_personal_info)
-		Values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) RETURNING id`
+		first_name, last_name, password, phone, address,
+		email, city, role_id, country, created_by, verification_code, is_password_temporary, is_verified, hide_personal_info)
+		Values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING id`
 
-	err := DB.QueryRow(query, user.Firstname, user.Lastname, user.Password, user.Phone, user.Address,
+	err := tx.QueryRow(query, user.Firstname, user.Lastname, user.Password, user.Phone, user.Address,
 		user.Email, user.City, user.IdRole, user.Country, user.CreatedBy,
 		user.VerificationCode, user.IsPasswordTemporary, user.IsVerified, user.HidePersonalInfo,
 	).Scan(&user.Id)
@@ -169,11 +169,11 @@ func GetAllUsers(fr model.FilteredRequest) (model.PaginatedResponse, error) {
 
 func searchUserQuery() string {
 	var query = `SELECT
-						u.id, u.firstname, u.lastname, u.gender, u.phone, u.city, u.address, u.email,
-						u.country, r.name, u.is_available, u.created_by, u.created_at, u.lastlogin, u.donated_at,
-						u.id_role, u.hide_personal_info 
+						u.id, u.first_name, u.last_name, u.gender, u.phone, u.city, u.address, u.email,
+						u.country, r.name, u.is_available, u.created_by, u.created_at, u.last_login, u.donated_at,
+						u.role_id, u.hide_personal_info 
 						FROM users u
-						JOIN role r ON r.id=u.id_role 
+						JOIN role r ON r.id=u.role_id 
 						WHERE
 							u.is_available=TRUE
 							`
@@ -183,7 +183,7 @@ func searchUserQuery() string {
 
 func GetRepresentativeProfileID(userId int) (int, error) {
 	var id int
-	query := `SELECT id FROM representative WHERE user_id=$1 AND isdeleted=false`
+	query := `SELECT id FROM representative WHERE user_id=$1 AND is_deleted=false`
 	err := DB.QueryRow(query, userId).Scan(&id)
 	if errors.Is(err, sql.ErrNoRows) {
 		return 0, model.NewError(itn.ErrorProfileNotFound, 404)
@@ -199,7 +199,7 @@ func GetRepresentativeProfileID(userId int) (int, error) {
 
 func GetProfessionalProfileID(userId int) (int, error) {
 	var id int
-	query := `SELECT id FROM professional WHERE user_id=$1 AND isdeleted=false`
+	query := `SELECT id FROM professional WHERE user_id=$1 AND is_deleted=false`
 	err := DB.QueryRow(query, userId).Scan(&id)
 	if errors.Is(err, sql.ErrNoRows) {
 		return 0, model.NewError(itn.ErrorProfileNotFound, 404)
@@ -224,10 +224,10 @@ func GetSellerProfileCompletePercentage(session model.Session) (int, error) {
 func GetUser(id int, s model.Session) (model.User, error) {
 
 	query := `SELECT
-	u.id, u.firstname, u.lastname, u.gender, u.phone, u.city, u.address, u.email,
-	u.country, r.name, u.is_available, u.created_by, u.created_at, u.lastlogin, u.donated_at, u.id_role, u.isverified, u.hide_personal_info
+	u.id, u.first_name, u.last_name, u.gender, u.phone, u.city, u.address, u.email,
+	u.country, r.name, u.is_available, u.created_by, u.created_at, u.last_login, u.donated_at, u.role_id, u.is_verified, u.hide_personal_info
 	FROM users u
-	JOIN role r ON r.id=u.id_role 
+	JOIN role r ON r.id=u.role_id 
 	WHERE
 		u.id=$1
 		AND u.is_available=TRUE`
@@ -302,11 +302,11 @@ func DeleteUser(idUser int) error {
 }
 
 func GetUsersByLastLogin(monthsInterval int, includeOneDay bool) ([]model.User, error) {
-	query := `SELECT id, email, lastlogin FROM users WHERE 
-	lastlogin <= NOW() - INTERVAL '%d month' AND is_available = true AND id_role = 3 `
+	query := `SELECT id, email, last_login FROM users WHERE 
+	last_login <= NOW() - INTERVAL '%d month' AND is_available = true AND role_id = 3 `
 	query = fmt.Sprintf(query, monthsInterval)
 	if includeOneDay {
-		query += fmt.Sprintf(` AND lastlogin >= NOW() - INTERVAL '%d month' - INTERVAL '1 day'`, monthsInterval)
+		query += fmt.Sprintf(` AND last_login >= NOW() - INTERVAL '%d month' - INTERVAL '1 day'`, monthsInterval)
 	}
 
 	var list []model.User
@@ -355,7 +355,7 @@ func ToggleUserStatus(idUser int) error {
 }
 
 func IsNewUser(user model.User, session model.Session) (int, error) {
-	query := `UPDATE users SET isverified = false, is_available = true WHERE email=$1 AND is_available=FALSE RETURNING id`
+	query := `UPDATE users SET is_verified = false, is_available = true WHERE email=$1 AND is_available=FALSE RETURNING id`
 	var id int
 	err := DB.QueryRow(query, user.Email).Scan(&id)
 	if errors.Is(err, sql.ErrNoRows) {
@@ -393,7 +393,7 @@ func IsExistInDb(value string, table string, field string) (int, bool) {
 
 func ChangePassword(userid int, newpassword string) (int, error) {
 	var id int
-	query := `UPDATE users SET password=$1, ispasswordtemp = false WHERE id=$2 RETURNING id`
+	query := `UPDATE users SET password=$1, is_password_temporary = false WHERE id=$2 RETURNING id`
 	err := DB.QueryRow(query, newpassword, userid).Scan(&id)
 	if errors.Is(err, sql.ErrNoRows) {
 		return 0, model.NewError(itn.ErrorUserNotFound, 404)
@@ -409,7 +409,7 @@ func ChangePassword(userid int, newpassword string) (int, error) {
 
 func ResetPassword(userid int, newpassword string) (int, error) {
 	var id int
-	query := `UPDATE users SET password=$1, ispasswordtemp = true  WHERE id=$2 RETURNING id`
+	query := `UPDATE users SET password=$1, is_password_temporary = true  WHERE id=$2 RETURNING id`
 	err := DB.QueryRow(query, newpassword, userid).Scan(&id)
 	if errors.Is(err, sql.ErrNoRows) {
 		return 0, model.NewError(itn.ErrorUserNotFound, 404)
@@ -444,7 +444,7 @@ func GetUserByEmail(email string) (model.User, error) {
 
 func VerifyUser(code string) (string, error) {
 	var firstname string
-	query := `UPDATE users SET isverified=true WHERE verificationcode=$1 RETURNING firstname`
+	query := `UPDATE users SET is_verified=true WHERE verification_code=$1 RETURNING first_name`
 	err := DB.QueryRow(query, code).Scan(&firstname)
 	if errors.Is(err, sql.ErrNoRows) {
 		return "", model.NewError("User Not Found", 404)
@@ -461,7 +461,7 @@ func VerifyUser(code string) (string, error) {
 
 func GetUserBasicData(id int) (name, email string, err error) {
 
-	query := `SELECT firstname, email FROM users WHERE id=$1`
+	query := `SELECT first_name, email FROM users WHERE id=$1`
 	err = DB.QueryRow(query, id).Scan(&name, &email)
 	if errors.Is(err, sql.ErrNoRows) {
 		return "", "", model.NewError(itn.ErrorUserNotFound, 404)
@@ -480,10 +480,10 @@ func GetUserBasicData(id int) (name, email string, err error) {
 func prepareUserFieldsToUpdate(user model.User) string {
 	query := " "
 	if !utils.IsEmpty(user.Firstname) {
-		query += fmt.Sprintf("firstname = '%s',", user.Firstname)
+		query += fmt.Sprintf("first_name = '%s',", user.Firstname)
 	}
 	if !utils.IsEmpty(user.Lastname) {
-		query += fmt.Sprintf("lastname = '%s',", user.Lastname)
+		query += fmt.Sprintf("last_name = '%s',", user.Lastname)
 	}
 	if !utils.IsEmpty(user.Phone) {
 		query += fmt.Sprintf("phone = '%s',", user.Phone)
@@ -501,7 +501,7 @@ func prepareUserFieldsToUpdate(user model.User) string {
 		query += fmt.Sprintf("country = '%s',", user.Country)
 	}
 	if user.IdRole > 0 {
-		query += fmt.Sprintf("id_role = '%d',", user.IdRole)
+		query += fmt.Sprintf("role_id = '%d',", user.IdRole)
 	}
 
 	return query

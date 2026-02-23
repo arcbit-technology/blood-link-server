@@ -113,4 +113,220 @@ INSERT INTO public.users (
  2, true, true, now(), now())
 ON CONFLICT (email) DO NOTHING;
 
+-- Normalize legacy non-snake_case columns to snake_case.
+-- Uses conditional renames for safer re-runs across environments.
+
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+          AND table_name = 'users'
+          AND column_name = 'isverified'
+    ) AND NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+          AND table_name = 'users'
+          AND column_name = 'is_verified'
+    ) THEN
+        ALTER TABLE public.users RENAME COLUMN isverified TO is_verified;
+    END IF;
+
+    IF EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+          AND table_name = 'users'
+          AND column_name = 'lastlogin'
+    ) AND NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+          AND table_name = 'users'
+          AND column_name = 'last_login'
+    ) THEN
+        ALTER TABLE public.users RENAME COLUMN lastlogin TO last_login;
+    END IF;
+
+    IF EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+          AND table_name = 'permission'
+          AND column_name = 'onlysuperadmin'
+    ) AND NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+          AND table_name = 'permission'
+          AND column_name = 'only_superadmin'
+    ) THEN
+        ALTER TABLE public.permission RENAME COLUMN onlysuperadmin TO only_superadmin;
+    END IF;
+
+    IF EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+          AND table_name = 'role'
+          AND column_name = 'isdeleted'
+    ) AND NOT EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+          AND table_name = 'role'
+          AND column_name = 'is_deleted'
+    ) THEN
+        ALTER TABLE public.role RENAME COLUMN isdeleted TO is_deleted;
+    END IF;
+END $$;
+
+-- Normalize legacy non-snake_case identifiers to snake_case across commonly used tables.
+-- Uses conditional renames for safer re-runs across environments.
+
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'users' AND column_name = 'firstname'
+    ) AND NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'users' AND column_name = 'first_name'
+    ) THEN
+        ALTER TABLE public.users RENAME COLUMN firstname TO first_name;
+    END IF;
+
+    IF EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'users' AND column_name = 'lastname'
+    ) AND NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'users' AND column_name = 'last_name'
+    ) THEN
+        ALTER TABLE public.users RENAME COLUMN lastname TO last_name;
+    END IF;
+
+    IF EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'users' AND column_name = 'id_role'
+    ) AND NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'users' AND column_name = 'role_id'
+    ) THEN
+        ALTER TABLE public.users RENAME COLUMN id_role TO role_id;
+    END IF;
+
+    IF EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'users' AND column_name = 'idrole'
+    ) AND NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'users' AND column_name = 'role_id'
+    ) THEN
+        ALTER TABLE public.users RENAME COLUMN idrole TO role_id;
+    END IF;
+
+    IF EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'users' AND column_name = 'verificationcode'
+    ) AND NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'users' AND column_name = 'verification_code'
+    ) THEN
+        ALTER TABLE public.users RENAME COLUMN verificationcode TO verification_code;
+    END IF;
+
+    IF EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'users' AND column_name = 'ispasswordtemp'
+    ) AND NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'users' AND column_name = 'is_password_temporary'
+    ) THEN
+        ALTER TABLE public.users RENAME COLUMN ispasswordtemp TO is_password_temporary;
+    END IF;
+
+    IF EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'users' AND column_name = 'hidepersonalinfo'
+    ) AND NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'users' AND column_name = 'hide_personal_info'
+    ) THEN
+        ALTER TABLE public.users RENAME COLUMN hidepersonalinfo TO hide_personal_info;
+    END IF;
+
+    IF EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'sessions' AND column_name = 'lastused'
+    ) AND NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'sessions' AND column_name = 'last_used'
+    ) THEN
+        ALTER TABLE public.sessions RENAME COLUMN lastused TO last_used;
+    END IF;
+
+    IF EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'sessions' AND column_name = 'expireat'
+    ) AND NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'sessions' AND column_name = 'expire_at'
+    ) THEN
+        ALTER TABLE public.sessions RENAME COLUMN expireat TO expire_at;
+    END IF;
+
+    IF EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'sessions' AND column_name = 'isocountry'
+    ) AND NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'sessions' AND column_name = 'iso_country'
+    ) THEN
+        ALTER TABLE public.sessions RENAME COLUMN isocountry TO iso_country;
+    END IF;
+
+    IF EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'representative' AND column_name = 'createdby'
+    ) AND NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'representative' AND column_name = 'created_by'
+    ) THEN
+        ALTER TABLE public.representative RENAME COLUMN createdby TO created_by;
+    END IF;
+
+    IF EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'professional' AND column_name = 'createdby'
+    ) AND NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'professional' AND column_name = 'created_by'
+    ) THEN
+        ALTER TABLE public.professional RENAME COLUMN createdby TO created_by;
+    END IF;
+
+    IF EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'representative' AND column_name = 'isdeleted'
+    ) AND NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'representative' AND column_name = 'is_deleted'
+    ) THEN
+        ALTER TABLE public.representative RENAME COLUMN isdeleted TO is_deleted;
+    END IF;
+
+    IF EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'professional' AND column_name = 'isdeleted'
+    ) AND NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'professional' AND column_name = 'is_deleted'
+    ) THEN
+        ALTER TABLE public.professional RENAME COLUMN isdeleted TO is_deleted;
+    END IF;
+END $$;
+
 

@@ -12,12 +12,12 @@ import (
 
 func UpdateSession(token string) error {
 	const query = `UPDATE sessions
-						SET 
-							lastused='now()',
-							expireat= now() + '01:00:00'::TIME
-					WHERE 
-						token=$1
-						AND expireat > 'now()'
+						SET
+							last_used = now(),
+							expire_at = now() + interval '1 hour'
+					WHERE
+						token = $1
+						AND expire_at > now()
 					RETURNING token`
 
 	err := DB.QueryRow(query, token).Scan(&token)
@@ -113,9 +113,9 @@ func Login(email string) (model.User, error) {
 	var user model.User
 	var lastlogin sql.NullTime
 	const query = `SELECT
-					 	id, firstname, lastname, gender, password, phone, city, address,
-					 	email, country, id_role, is_available, COALESCE(created_by, 0), created_at,
-						lastlogin, donated_at, isverified, verification_code, is_password_temporary, hide_personal_info
+					 	id, first_name, last_name, gender, password, phone, city, address,
+					 	email, country, role_id, is_available, COALESCE(created_by, 0), created_at,
+						last_login, donated_at, is_verified, verification_code, is_password_temporary, hide_personal_info
 					FROM
 					  	users 
 					WHERE
@@ -152,7 +152,7 @@ func Login(email string) (model.User, error) {
 func UpdateLastLogin(id int) error {
 	const query = `UPDATE users
 						SET
-							lastlogin=now()
+							last_login = now()
 					WHERE
 						id=$1`
 	_, err := DB.Exec(query, id)

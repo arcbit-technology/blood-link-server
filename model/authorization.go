@@ -11,12 +11,12 @@ type Role struct {
 	Id          int          `json:"id"`
 	Name        string       `json:"name"`
 	Description string       `json:"description"`
-	CreatedAt   time.Time    `json:"createdAt"`
-	UpdatedAt   time.Time    `json:"updatedAt"`
-	CreatedBy   int          `json:"createdBy"`
-	UpdatedBy   int          `json:"updatedBy"`
-	IsDeleted   bool         `json:"isdeleted"`
-	Permissions []Permission `json:"permission"`
+	CreatedAt   time.Time    `json:"created_at"`
+	UpdatedAt   time.Time    `json:"updated_at"`
+	CreatedBy   int          `json:"created_by"`
+	UpdatedBy   int          `json:"updated_by"`
+	IsDeleted   bool         `json:"is_deleted"`
+	Permissions []Permission `json:"permissions"`
 	UserCreate  string       `json:"-"`
 }
 
