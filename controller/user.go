@@ -86,10 +86,6 @@ func prepareUserInsertion(user *model.User, session model.Session) error {
 		return model.NewError(itn.ErrorRoleNotFound, 400)
 	}
 
-	if _, isExist := dao.IsExistInDb(user.Username, "users", "username"); isExist {
-		return model.NewError(itn.ErrorUsernameTaken, 409)
-	}
-
 	if _, isExist := dao.IsExistInDb(user.Email, "users", "email"); isExist {
 		return model.NewError(itn.ErrorEmailExists, 409)
 	}
@@ -115,12 +111,6 @@ func validateUser(user *model.User) error {
 	}
 	if user.Lastname == "" {
 		return model.NewError(itn.ErrorLastnameRequired, 400)
-	}
-	if user.Username == "" {
-		return model.NewError(itn.ErrorUsernameRequired, 400)
-	}
-	if len(user.Username) < 3 {
-		return model.NewError(itn.ErrorTooShortUsername, 400)
 	}
 	if user.Email == "" {
 		return model.NewError(itn.ErrorEmailRequired, 400)
@@ -264,7 +254,7 @@ func ChangeTempPassword(pass model.ChangeTempPassword, session model.Session, IP
 		return model.ProfileLogin{}, model.NewError(itn.ErrorUnknown, 500)
 	}
 	return Login(model.LoginRequest{
-		Username: user.Username,
+		Email:    user.Email,
 		Password: string(pass.Password),
 	}, IP)
 }

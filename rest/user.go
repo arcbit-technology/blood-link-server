@@ -192,14 +192,14 @@ func ToggleUserStatus(w http.ResponseWriter, r *http.Request) {
 
 	path := r.URL.Path
 	if strings.Contains(path, "disable") {
-		if !user.IsActive {
+		if !user.IsAvailable {
 			JSON(w, nil, model.NewError(itn.ErrorAlreadyDisabled, 400))
 			return
 		}
 	}
 
 	if strings.Contains(path, "enable") {
-		if user.IsActive {
+		if user.IsAvailable {
 			JSON(w, nil, model.NewError(itn.ErrorAlreadyEnabled, 400))
 			return
 		}

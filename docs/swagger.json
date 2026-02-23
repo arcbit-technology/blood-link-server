@@ -1188,7 +1188,7 @@
         "password": {
           "type": "string"
         },
-        "username": {
+        "email": {
           "type": "string"
         }
       }
@@ -1300,6 +1300,9 @@
     "model.User": {
       "type": "object",
       "properties": {
+        "gender": {
+          "type": "string"
+        },
         "address": {
           "type": "string"
         },
@@ -1336,7 +1339,7 @@
         "idrole": {
           "type": "integer"
         },
-        "isactive": {
+        "isavailable": {
           "type": "boolean"
         },
         "ispasswordtemporary": {
@@ -1346,6 +1349,9 @@
           "type": "boolean"
         },
         "lastlogin": {
+          "type": "string"
+        },
+        "donatedat": {
           "type": "string"
         },
         "lastname": {
@@ -1369,8 +1375,8 @@
         "updatedby": {
           "type": "integer"
         },
-        "username": {
-          "type": "string"
+        "hidepersonalinfo": {
+          "type": "boolean"
         },
         "verificationcode": {
           "type": "string"

@@ -27,7 +27,7 @@ type Session struct {
 }
 
 type LoginRequest struct {
-	Username string `json:"username"`
+	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
@@ -52,7 +52,6 @@ type RegisterRequest struct {
 	Lastname        string                `json:"lastname"`
 	Password        data.HiddenJsonString `json:"password"`
 	ConfirmPassword string                `json:"confirmpassword"`
-	Username        string                `json:"username"`
 	Email           string                `json:"email"`
 	Phone           string                `json:"phone"`
 	City            string                `json:"city"`

@@ -1331,7 +1331,7 @@ const docTemplate = `{
                 "password": {
                     "type": "string"
                 },
-                "username": {
+                "email": {
                     "type": "string"
                 }
             }
@@ -1443,6 +1443,9 @@ const docTemplate = `{
         "model.User": {
             "type": "object",
             "properties": {
+                "gender": {
+                    "type": "string"
+                },
                 "address": {
                     "type": "string"
                 },
@@ -1479,7 +1482,7 @@ const docTemplate = `{
                 "idrole": {
                     "type": "integer"
                 },
-                "isactive": {
+                "isavailable": {
                     "type": "boolean"
                 },
                 "ispasswordtemporary": {
@@ -1489,6 +1492,9 @@ const docTemplate = `{
                     "type": "boolean"
                 },
                 "lastlogin": {
+                    "type": "string"
+                },
+                "donatedat": {
                     "type": "string"
                 },
                 "lastname": {
@@ -1512,8 +1518,8 @@ const docTemplate = `{
                 "updatedby": {
                     "type": "integer"
                 },
-                "username": {
-                    "type": "string"
+                "hidepersonalinfo": {
+                    "type": "boolean"
                 },
                 "verificationcode": {
                     "type": "string"

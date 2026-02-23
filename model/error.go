@@ -1,6 +1,6 @@
 package model
 
-import "fmt"
+import "errors"
 
 type Error struct {
 	error error
@@ -16,7 +16,7 @@ func (e Error) Code() int {
 }
 
 func NewError(err string, code int) Error {
-	return Error{error: fmt.Errorf(err), code: code}
+	return Error{error: errors.New(err), code: code}
 }
 
 var UnknownError = NewError("something went wrong", 500)

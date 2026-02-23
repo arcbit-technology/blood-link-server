@@ -62,13 +62,13 @@ func createProfessional(tx *sql.Tx, user model.User) error {
 
 func createUser(user *model.User, tx *sql.Tx) error {
 	query := `Insert into users (
-		firstname, lastname, username, password, phone, address,
-		email, city, id_role, country, created_by, verification_code, is_password_temporary, isverified)
-		Values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING id`
+		firstname, lastname, password, phone, address,
+		email, city, id_role, country, created_by, verification_code, is_password_temporary, isverified, hide_personal_info)
+		Values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) RETURNING id`
 
-	err := DB.QueryRow(query, user.Firstname, user.Lastname, user.Username, user.Password, user.Phone, user.Address,
+	err := DB.QueryRow(query, user.Firstname, user.Lastname, user.Password, user.Phone, user.Address,
 		user.Email, user.City, user.IdRole, user.Country, user.CreatedBy,
-		user.VerificationCode, user.IsPasswordTemporary, user.IsVerified,
+		user.VerificationCode, user.IsPasswordTemporary, user.IsVerified, user.HidePersonalInfo,
 	).Scan(&user.Id)
 
 	if err != nil {
@@ -83,7 +83,7 @@ func createUser(user *model.User, tx *sql.Tx) error {
 
 func UpdateUserProfilePicture(userProfileKey string, id int) error {
 
-	query := `UPDATE  users SET photo = $1, updated_at=CURRENT_TIMESTAMP where id = $2 AND isactive=TRUE`
+	query := `UPDATE  users SET photo = $1, updated_at=CURRENT_TIMESTAMP where id = $2 AND is_available=TRUE`
 
 	_, err := DB.Exec(query, userProfileKey, id)
 
@@ -102,7 +102,7 @@ func UpdateUser(user model.User, id int, s model.Session) error {
 	query := fmt.Sprintf(`UPDATE  users SET %s updated_at=CURRENT_TIMESTAMP, updated_by=$1
 					WHERE 
 						id=$2
-						AND isactive=TRUE
+						AND is_available=TRUE
 						`, prepareUserFieldsToUpdate(user),
 	)
 
@@ -142,13 +142,18 @@ func GetAllUsers(fr model.FilteredRequest) (model.PaginatedResponse, error) {
 	for rows.Next() {
 		var user model.User
 
-		err = rows.Scan(&user.Id, &user.Firstname, &user.Lastname, &user.Username, &user.Phone, &user.City, &user.Address,
-			&user.Email, &user.Country, &user.RoleName, &user.IsActive, &user.CreatedBy, &user.CreatedAt, &lastlogin, &user.IdRole)
+		var donatedAt sql.NullTime
+
+		err = rows.Scan(&user.Id, &user.Firstname, &user.Lastname, &user.Gender, &user.Phone, &user.City, &user.Address,
+			&user.Email, &user.Country, &user.RoleName, &user.IsAvailable, &user.CreatedBy, &user.CreatedAt, &lastlogin, &donatedAt, &user.IdRole, &user.HidePersonalInfo)
 		if err != nil {
 			logger.GetLogger().LogErrors(err, nil)
 			return model.PaginatedResponse{}, model.UnknownError
 		}
 		user.LastLogin = utils.ConvertNullTime(lastlogin)
+		if donatedAt.Valid {
+			user.DonatedAt = donatedAt.Time.Format("2006-01-02")
+		}
 
 		list = append(list, user)
 
@@ -164,13 +169,13 @@ func GetAllUsers(fr model.FilteredRequest) (model.PaginatedResponse, error) {
 
 func searchUserQuery() string {
 	var query = `SELECT
-						u.id, u.firstname, u.lastname, u.username, u.phone, u.city, u.address, u.email,
-						u.country, r.name, u.isactive, u.created_by, u.created_at, u.lastlogin,
-						u.id_role 
+						u.id, u.firstname, u.lastname, u.gender, u.phone, u.city, u.address, u.email,
+						u.country, r.name, u.is_available, u.created_by, u.created_at, u.lastlogin, u.donated_at,
+						u.id_role, u.hide_personal_info 
 						FROM users u
 						JOIN role r ON r.id=u.id_role 
 						WHERE
-							u.isactive=TRUE
+							u.is_available=TRUE
 							`
 
 	return query
@@ -219,20 +224,22 @@ func GetSellerProfileCompletePercentage(session model.Session) (int, error) {
 func GetUser(id int, s model.Session) (model.User, error) {
 
 	query := `SELECT
-	u.id, u.firstname, u.lastname, u.username, u.phone, u.city, u.address, u.email,
-	u.country, r.name, u.isactive, u.created_by, u.created_at, u.lastlogin, u.id_role, u.isverified
+	u.id, u.firstname, u.lastname, u.gender, u.phone, u.city, u.address, u.email,
+	u.country, r.name, u.is_available, u.created_by, u.created_at, u.lastlogin, u.donated_at, u.id_role, u.isverified, u.hide_personal_info
 	FROM users u
 	JOIN role r ON r.id=u.id_role 
 	WHERE
 		u.id=$1
-		AND u.isactive=TRUE`
+		AND u.is_available=TRUE`
 
 	var user model.User
 	var lastlogin sql.NullTime
 
+	var donatedAt sql.NullTime
+
 	err := DB.QueryRow(query, id).Scan(
-		&user.Id, &user.Firstname, &user.Lastname, &user.Username, &user.Phone, &user.City, &user.Address,
-		&user.Email, &user.Country, &user.RoleName, &user.IsActive, &user.CreatedBy, &user.CreatedAt, &lastlogin, &user.IdRole, &user.IsVerified,
+		&user.Id, &user.Firstname, &user.Lastname, &user.Gender, &user.Phone, &user.City, &user.Address,
+		&user.Email, &user.Country, &user.RoleName, &user.IsAvailable, &user.CreatedBy, &user.CreatedAt, &lastlogin, &donatedAt, &user.IdRole, &user.IsVerified, &user.HidePersonalInfo,
 	)
 	if errors.Is(err, sql.ErrNoRows) {
 		return model.User{}, model.NewError(itn.ErrorUserNotFound, 404)
@@ -252,6 +259,9 @@ func GetUser(id int, s model.Session) (model.User, error) {
 	}
 
 	user.LastLogin = utils.ConvertNullTime(lastlogin)
+	if donatedAt.Valid {
+		user.DonatedAt = donatedAt.Time.Format("2006-01-02")
+	}
 
 	return user, nil
 }
@@ -261,8 +271,8 @@ func GetCredendials(id int) (model.LoginRequest, string) {
 	var user model.LoginRequest
 
 	var errString string
-	query := "Select username,password from users where id=$1 AND isactive=TRUE ;"
-	err := DB.QueryRow(query, id).Scan(&user.Username, &user.Password)
+	query := "Select password from users where id=$1 AND is_available=TRUE ;"
+	err := DB.QueryRow(query, id).Scan(&user.Password)
 	if err != nil {
 		logger.GetLogger().LogErrors(err, map[string]interface{}{
 			"query": query,
@@ -276,7 +286,7 @@ func GetCredendials(id int) (model.LoginRequest, string) {
 func DeleteUser(idUser int) error {
 	var idreturn int
 
-	query := "UPDATE users set updated_at=CURRENT_TIMESTAMP, isactive=FALSE WHERE (id=$1 AND isactive=TRUE)  RETURNING id;"
+	query := "UPDATE users set updated_at=CURRENT_TIMESTAMP, is_available=FALSE WHERE (id=$1 AND is_available=TRUE)  RETURNING id;"
 
 	err := DB.QueryRow(query, idUser).Scan(&idreturn)
 	if errors.Is(err, sql.ErrTxDone) {
@@ -293,7 +303,7 @@ func DeleteUser(idUser int) error {
 
 func GetUsersByLastLogin(monthsInterval int, includeOneDay bool) ([]model.User, error) {
 	query := `SELECT id, email, lastlogin FROM users WHERE 
-	lastlogin <= NOW() - INTERVAL '%d month' AND isactive = true AND id_role = 3 `
+	lastlogin <= NOW() - INTERVAL '%d month' AND is_available = true AND id_role = 3 `
 	query = fmt.Sprintf(query, monthsInterval)
 	if includeOneDay {
 		query += fmt.Sprintf(` AND lastlogin >= NOW() - INTERVAL '%d month' - INTERVAL '1 day'`, monthsInterval)
@@ -328,7 +338,7 @@ func GetUsersByLastLogin(monthsInterval int, includeOneDay bool) ([]model.User, 
 func ToggleUserStatus(idUser int) error {
 	var idreturn int
 
-	query := "UPDATE users set updated_at=CURRENT_TIMESTAMP, isactive=NOT isactive WHERE id=$1  RETURNING id;"
+	query := "UPDATE users set updated_at=CURRENT_TIMESTAMP, is_available=NOT is_available WHERE id=$1  RETURNING id;"
 
 	err := DB.QueryRow(query, idUser).Scan(&idreturn)
 	if errors.Is(err, sql.ErrNoRows) {
@@ -345,7 +355,7 @@ func ToggleUserStatus(idUser int) error {
 }
 
 func IsNewUser(user model.User, session model.Session) (int, error) {
-	query := `UPDATE users SET isverified = false, isactive = true WHERE email=$1 AND isactive=FALSE RETURNING id`
+	query := `UPDATE users SET isverified = false, is_available = true WHERE email=$1 AND is_available=FALSE RETURNING id`
 	var id int
 	err := DB.QueryRow(query, user.Email).Scan(&id)
 	if errors.Is(err, sql.ErrNoRows) {
@@ -363,7 +373,7 @@ func IsNewUser(user model.User, session model.Session) (int, error) {
 func IsExistInDb(value string, table string, field string) (int, bool) {
 	var id int
 
-	requestStatement := `SELECT id FROM ` + table + ` WHERE ` + field + `= $1 AND isactive=TRUE`
+	requestStatement := `SELECT id FROM ` + table + ` WHERE ` + field + `= $1 AND is_available=TRUE`
 
 	err := DB.QueryRow(requestStatement, value).Scan(&id)
 	if errors.Is(err, sql.ErrNoRows) {
@@ -416,7 +426,7 @@ func ResetPassword(userid int, newpassword string) (int, error) {
 func GetUserByEmail(email string) (model.User, error) {
 	query := `SELECT
 	id FROM users 
-	WHERE email=$1 AND isactive=TRUE`
+	WHERE email=$1 AND is_available=TRUE`
 	var user model.User
 	err := DB.QueryRow(query, email).Scan(&user.Id)
 	if errors.Is(err, sql.ErrNoRows) {
@@ -489,9 +499,6 @@ func prepareUserFieldsToUpdate(user model.User) string {
 	}
 	if !utils.IsEmpty(user.Country) {
 		query += fmt.Sprintf("country = '%s',", user.Country)
-	}
-	if !utils.IsEmpty(user.Username) {
-		query += fmt.Sprintf("username = '%s',", user.Username)
 	}
 	if user.IdRole > 0 {
 		query += fmt.Sprintf("id_role = '%d',", user.IdRole)

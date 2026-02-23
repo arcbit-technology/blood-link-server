@@ -109,22 +109,24 @@ func InsertLocation(location model.Location) error {
 	return nil
 }
 
-func Login(username string) (model.User, error) {
+func Login(email string) (model.User, error) {
 	var user model.User
 	var lastlogin sql.NullTime
 	const query = `SELECT
-					 	id, firstname, lastname, username, password, phone, city, address,
-					 	email, country, id_role, isactive, COALESCE(created_by, 0), created_at,
-						lastlogin, isverified, verification_code, is_password_temporary
+					 	id, firstname, lastname, gender, password, phone, city, address,
+					 	email, country, id_role, is_available, COALESCE(created_by, 0), created_at,
+						lastlogin, donated_at, isverified, verification_code, is_password_temporary, hide_personal_info
 					FROM
 					  	users 
 					WHERE
-						username = $1`
+						email = $1`
 
-	err := DB.QueryRow(query, username).Scan(&user.Id, &user.Firstname, &user.Lastname,
-		&user.Username, &user.Password, &user.Phone, &user.City, &user.Address, &user.Email,
-		&user.Country, &user.IdRole, &user.IsActive, &user.CreatedBy, &user.CreatedAt,
-		&lastlogin, &user.IsVerified, &user.VerificationCode, &user.IsPasswordTemporary,
+	var donatedAt sql.NullTime
+
+	err := DB.QueryRow(query, email).Scan(&user.Id, &user.Firstname, &user.Lastname, &user.Gender,
+		&user.Password, &user.Phone, &user.City, &user.Address, &user.Email,
+		&user.Country, &user.IdRole, &user.IsAvailable, &user.CreatedBy, &user.CreatedAt,
+		&lastlogin, &donatedAt, &user.IsVerified, &user.VerificationCode, &user.IsPasswordTemporary, &user.HidePersonalInfo,
 	)
 
 	if errors.Is(err, sql.ErrNoRows) {
@@ -140,6 +142,9 @@ func Login(username string) (model.User, error) {
 	}
 
 	user.LastLogin = utils.ConvertNullTime(lastlogin)
+	if donatedAt.Valid {
+		user.DonatedAt = donatedAt.Time.Format("2006-01-02")
+	}
 
 	return user, nil
 }

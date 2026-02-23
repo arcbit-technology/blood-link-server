@@ -3,8 +3,8 @@ CREATE TABLE IF NOT EXISTS public.users (
     id serial PRIMARY KEY,
     firstname varchar(255),
     lastname varchar(255),
+    gender varchar(50),
     password varchar(255),
-    username varchar(255),
     email varchar(255) UNIQUE,
     phone varchar(50),
     address text,
@@ -12,9 +12,10 @@ CREATE TABLE IF NOT EXISTS public.users (
     district varchar(100),
     division varchar(100),
     country varchar(100),
-    isactive boolean DEFAULT true,
+    is_available boolean DEFAULT true,
     isverified boolean DEFAULT false,
     lastlogin timestamp,
+    donated_at timestamp,
     created_at timestamp DEFAULT now(),
     updated_at timestamp DEFAULT now(),
     created_by integer,
@@ -22,7 +23,8 @@ CREATE TABLE IF NOT EXISTS public.users (
     profession varchar(100),
     is_password_temporary boolean DEFAULT false,
     id_role integer,
-    verification_code varchar(255)
+    verification_code varchar(255),
+    hide_personal_info boolean DEFAULT false
 );
 
 
@@ -32,8 +34,6 @@ CREATE TABLE IF NOT EXISTS public.sessions (
     token text UNIQUE NOT NULL,
     role_id integer,
     user_id integer,
-    buyer_profile_id integer,
-    seller_profile_id integer,
     loggedin_profile_id integer,
     is_valid boolean DEFAULT true,
     last_used timestamp,
@@ -103,13 +103,13 @@ SELECT setval('public.role_id_seq', (SELECT MAX(id) FROM public.Role));
 -- Insert default users (Superadmin & Admin)
 -- Password is Admin@1234
 INSERT INTO public.users (
-    firstname, lastname, username, email, password, phone, city, address, country, verification_code,
-    id_role, isactive, isverified, created_at, updated_at
+    firstname, lastname, gender, email, password, phone, city, address, country, verification_code,
+    id_role, is_available, isverified, created_at, updated_at
 ) VALUES 
-('Super', 'Admin', 'superadmin', 'superadmin@example.com', '$2a$10$JN6X.THRe8nrKzpWeY4Xrupd3Y4tKvVEHrmF8IsjyZxgBn0pU9Ake', '', '', '', '', '',
+('Super', 'Admin', 'M', 'superadmin@blood-link.online', '$2a$10$JN6X.THRe8nrKzpWeY4Xrupd3Y4tKvVEHrmF8IsjyZxgBn0pU9Ake', '', '', '', '', '',
  1, true, true, now(), now()),
 
-('Admin', 'User', 'admin', 'admin@example.com', '$2a$10$JN6X.THRe8nrKzpWeY4Xrupd3Y4tKvVEHrmF8IsjyZxgBn0pU9Ake', '', '', '', '', '',
+('Admin', 'User', 'M', 'admin@blood-link.online', '$2a$10$JN6X.THRe8nrKzpWeY4Xrupd3Y4tKvVEHrmF8IsjyZxgBn0pU9Ake', '', '', '', '', '',
  2, true, true, now(), now())
 ON CONFLICT (email) DO NOTHING;
 

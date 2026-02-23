@@ -11,7 +11,10 @@ type User struct {
 	Firstname           string                `json:"firstname,omitempty"`
 	Lastname            string                `json:"lastname,omitempty"`
 	Password            data.HiddenJsonString `json:"password,omitempty"`
-	Username            string                `json:"username,omitempty"`
+	Gender              string                `json:"gender,omitempty"`
+	HidePersonalInfo    bool                  `json:"hidepersonalinfo,omitempty"`
+	DonatedAt           string                `json:"donatedat,omitempty"`
+	IsAvailable         bool                  `json:"isavailable,omitempty"`
 	Email               string                `json:"email,omitempty"`
 	Phone               string                `json:"phone,omitempty"`
 	Address             string                `json:"address,omitempty"`
@@ -19,7 +22,6 @@ type User struct {
 	District            string                `json:"district,omitempty"`
 	Division            string                `json:"division,omitempty"`
 	Country             string                `json:"country,omitempty"`
-	IsActive            bool                  `json:"isactive,omitempty"`
 	IsVerified          bool                  `json:"isverified,omitempty"`
 	LastLogin           string                `json:"lastlogin,omitempty"`
 	CreatedAt           time.Time             `json:"createdat,omitempty"`

@@ -155,7 +155,7 @@ func Login(req model.LoginRequest, IP string) (model.ProfileLogin, error) {
 		return login, err
 	}
 
-	login.User, err = dao.Login(req.Username)
+	login.User, err = dao.Login(req.Email)
 	if err != nil {
 		return login, err
 	}
@@ -361,8 +361,12 @@ func validateLogin(user model.User, req model.LoginRequest) error {
 }
 
 func validateLoginRequest(req model.LoginRequest) error {
-	if utils.IsEmpty(req.Username) {
-		return model.NewError(itn.ErrorUsernameRequired, 400)
+	if utils.IsEmpty(req.Email) {
+		return model.NewError(itn.ErrorEmailRequired, 400)
+	}
+
+	if !utils.IsEmail(req.Email) {
+		return model.NewError(itn.ErrorEmailInvalid, 400)
 	}
 
 	if utils.IsEmpty(req.Password) {
@@ -407,9 +411,13 @@ func prepareAccountInsertion(user goth.User) (model.User, error) {
 	// 	userImageURL = "https://graph.facebook.com/" + user.UserID + "/picture?type=large"
 	// }
 
-	newUser := model.User{Firstname: user.FirstName, Lastname: user.LastName, Email: user.Email,
-		IdRole: model.USERROLE, CreatedBy: model.OUTBOUND_USER,
-		Username: user.Email}
+	newUser := model.User{
+		Firstname: user.FirstName,
+		Lastname:  user.LastName,
+		Email:     user.Email,
+		IdRole:    model.USERROLE,
+		CreatedBy: model.OUTBOUND_USER,
+	}
 
 	err := validateSocialAccountData(newUser)
 
@@ -582,10 +590,6 @@ func prepareUser(user *model.User) error {
 		return model.NewError(itn.ErrorEmailExists, 409)
 	}
 
-	if _, isExist := dao.IsExistInDb(user.Username, "users", "username"); isExist {
-		return model.NewError(itn.ErrorUsernameTaken, 409)
-	}
-
 	hashedPassword, err := utils.BeforeSave(string(user.Password))
 	if err != nil {
 		return err
@@ -613,10 +617,6 @@ func validateRegisterationBody(user *model.User) error {
 
 	if !utils.IsEmail(user.Email) {
 		return model.NewError(itn.ErrorEmailInvalid, 400)
-	}
-
-	if utils.IsEmpty(user.Username) {
-		return model.NewError(itn.ErrorUsernameRequired, 400)
 	}
 
 	if utils.IsEmpty(string(user.Password)) {
