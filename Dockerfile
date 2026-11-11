@@ -14,7 +14,6 @@ FROM frolvlad/alpine-glibc
 WORKDIR /app/
 
 COPY --from=build_stage /app/api ./api/
-COPY --from=build_stage /app/dao ./dao/
 
 EXPOSE 8080
 

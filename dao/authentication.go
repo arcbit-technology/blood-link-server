@@ -167,10 +167,12 @@ func UpdateLastLogin(id int) error {
 }
 
 func CreateSession(session model.Session) error {
+	// expire_at must be set: UpdateSession only accepts sessions with
+	// expire_at > now() and slides the 1-hour window on every request.
 	const query = `INSERT INTO sessions
-						(role_id, user_id, token)
+						(role_id, user_id, token, is_valid, last_used, expire_at)
 					VALUES(
-						$1, $2, $3
+						$1, $2, $3, true, now(), now() + interval '1 hour'
 					)`
 
 	_, err := DB.Exec(query, session.RoleId, session.UserId, session.Token)

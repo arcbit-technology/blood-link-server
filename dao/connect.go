@@ -9,7 +9,7 @@ import (
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
-	_ "github.com/golang-migrate/migrate/v4/source/file"
+	"github.com/golang-migrate/migrate/v4/source/iofs"
 )
 
 var DB *sql.DB
@@ -32,9 +32,13 @@ func InitDatabase(connString string) error {
 		return err
 	}
 
-	// read the migrations from the file system
-	mig, err := migrate.NewWithDatabaseInstance("file://./dao/migrations",
-		"postgres", driver)
+	// read the migrations embedded in the binary (see migrations.go)
+	src, err := iofs.New(migrationsFS, "migrations")
+	if err != nil {
+		return err
+	}
+
+	mig, err := migrate.NewWithInstance("iofs", src, "postgres", driver)
 	if err != nil {
 		// log.Fatal(err.Error())
 		return err

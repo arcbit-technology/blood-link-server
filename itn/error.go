@@ -187,4 +187,12 @@ const (
 	ErrorInvalidBuyerType                     = "api.bloodlinkapi.err.184" // Buyer type did not matched
 	ErrorGetingSellerProfile                  = "api.bloodlinkapi.err.185" // error getting seller Profile
 	ProfessionaNotExist                       = "api.bloodlinkapi.err.186" // Profession does not exist
+	ErrorPostNotFound                         = "api.bloodlinkapi.err.187" // blood request post not found
+	ErrorPostNotOpen                          = "api.bloodlinkapi.err.188" // blood request post is no longer open
+	ErrorPostTitleRequired                    = "api.bloodlinkapi.err.189" // post title required
+	ErrorPostHospitalRequired                 = "api.bloodlinkapi.err.190" // post hospital name required
+	ErrorPostLocationRequired                 = "api.bloodlinkapi.err.191" // post division and district required
+	ErrorPostRequiredDateInvalid              = "api.bloodlinkapi.err.192" // post required date missing, invalid or in the past
+	ErrorPostBloodGroupInvalid                = "api.bloodlinkapi.err.193" // post blood group invalid
+	ErrorPostOwnInterest                      = "api.bloodlinkapi.err.194" // cannot express interest in your own post
 )

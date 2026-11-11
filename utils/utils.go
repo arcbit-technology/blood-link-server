@@ -38,7 +38,8 @@ func GenerateRandomString(n int) string {
 }
 
 func IsEmail(e string) bool {
-	emailRegex := regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`)
+	// TLDs can be longer than 4 letters (e.g. .online, .company)
+	emailRegex := regexp.MustCompile(`^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,63}$`)
 	return emailRegex.MatchString(e)
 }
 

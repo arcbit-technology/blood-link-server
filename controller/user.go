@@ -78,6 +78,10 @@ func prepareUserInsertion(user *model.User, session model.Session) error {
 		return err
 	}
 
+	if err := normalizeDonorFields(user); err != nil {
+		return err
+	}
+
 	if err := canGiveUserRole(user.IdRole, session.RoleId); err != nil {
 		return err
 	}

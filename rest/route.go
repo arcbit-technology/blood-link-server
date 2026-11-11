@@ -51,6 +51,18 @@ func router() *mux.Router {
 	router.Methods("PUT").Path("/user/{id:[0-9]+}/disable").Name("disable user").HandlerFunc(ToggleUserStatus)
 	router.Methods("PUT").Path("/user/{id:[0-9]+}/enable").Name("enable user").HandlerFunc(ToggleUserStatus)
 
+	// Donors (public). "/doners" is the spelling the UI uses; "/donors" is an alias.
+	router.Methods("GET").Path("/doners").Name("getDonors").HandlerFunc(GetDonors)
+	router.Methods("GET").Path("/donors").Name("getDonorsAlias").HandlerFunc(GetDonors)
+	router.Methods("GET").Path("/doner/{id:[0-9]+}").Name("getDonor").HandlerFunc(GetDonor)
+	router.Methods("GET").Path("/donor/{id:[0-9]+}").Name("getDonorAlias").HandlerFunc(GetDonor)
+
+	// Blood request posts: listing is public, creating / interest needs login
+	router.Methods("GET").Path("/posts").Name("getPosts").HandlerFunc(GetPosts)
+	router.Methods("GET").Path("/post/{id:[0-9]+}").Name("getPost").HandlerFunc(GetPost)
+	router.Methods("POST").Path("/post").Name("createPost").HandlerFunc(CreatePost)
+	router.Methods("PUT").Path("/post/{id:[0-9]+}/interest").Name("togglePostInterest").HandlerFunc(TogglePostInterest)
+
 	// Locations
 	router.Methods("GET").Path("/divisions").Name("getDivisions").HandlerFunc(GetDivisions)
 	router.Methods("GET").Path("/districts").Name("getDistricts").HandlerFunc(GetDistricts)

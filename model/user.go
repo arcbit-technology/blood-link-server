@@ -12,6 +12,8 @@ type User struct {
 	Lastname            string                `json:"last_name,omitempty"`
 	Password            data.HiddenJsonString `json:"password,omitempty"`
 	Gender              string                `json:"gender,omitempty"`
+	BloodGroup          string                `json:"blood_group,omitempty"`
+	Age                 int                   `json:"age,omitempty"`
 	HidePersonalInfo    bool                  `json:"hide_personal_info,omitempty"`
 	DonatedAt           string                `json:"donated_at,omitempty"`
 	IsAvailable         bool                  `json:"is_available,omitempty"`

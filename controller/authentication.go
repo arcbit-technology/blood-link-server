@@ -194,6 +194,9 @@ func Login(req model.LoginRequest, IP string) (model.ProfileLogin, error) {
 	var login model.ProfileLogin
 	var err error
 
+	// emails are stored lower-case at registration
+	req.Email = strings.ToLower(strings.TrimSpace(req.Email))
+
 	if err = validateLoginRequest(req); err != nil {
 		return login, err
 	}
@@ -626,6 +629,10 @@ func prepareUser(user *model.User) error {
 
 	err := validateRegisterationBody(user)
 	if err != nil {
+		return err
+	}
+
+	if err := normalizeDonorFields(user); err != nil {
 		return err
 	}
 

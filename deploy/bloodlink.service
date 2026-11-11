@@ -1,0 +1,23 @@
+[Unit]
+Description=BloodLink API server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=bloodlink
+Group=bloodlink
+WorkingDirectory=/opt/bloodlink
+ExecStart=/opt/bloodlink/bloodlink-server
+Restart=always
+RestartSec=3
+
+# Hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/opt/bloodlink
+
+[Install]
+WantedBy=multi-user.target
