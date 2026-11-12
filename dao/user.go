@@ -244,7 +244,8 @@ func GetUser(id int, s model.Session) (model.User, error) {
 	COALESCE(u.phone, ''), COALESCE(u.city, ''), COALESCE(u.address, ''), u.email,
 	COALESCE(u.country, ''), r.name, u.is_available, COALESCE(u.created_by, 0), u.created_at,
 	u.last_login, u.donated_at, u.role_id, COALESCE(u.is_verified, false), COALESCE(u.hide_personal_info, false),
-	COALESCE(u.division, ''), COALESCE(u.district, ''), COALESCE(u.upazila, ''), COALESCE(u.blood_group, '')
+	COALESCE(u.division, ''), COALESCE(u.district, ''), COALESCE(u.upazila, ''), COALESCE(u.blood_group, ''),
+	COALESCE(u.photo, '')
 	FROM users u
 	JOIN role r ON r.id=u.role_id 
 	WHERE
@@ -260,6 +261,7 @@ func GetUser(id int, s model.Session) (model.User, error) {
 		&user.Id, &user.Firstname, &user.Lastname, &user.Gender, &user.Phone, &user.City, &user.Address,
 		&user.Email, &user.Country, &user.RoleName, &user.IsAvailable, &user.CreatedBy, &user.CreatedAt, &lastlogin, &donatedAt, &user.IdRole, &user.IsVerified, &user.HidePersonalInfo,
 		&user.Division, &user.District, &user.Upazila, &user.BloodGroup,
+		&user.Photo,
 	)
 	if errors.Is(err, sql.ErrNoRows) {
 		return model.User{}, model.NewError(itn.ErrorUserNotFound, 404)

@@ -17,6 +17,7 @@ type Donor struct {
 	District         string    `json:"district,omitempty"`
 	Division         string    `json:"division,omitempty"`
 	Upazila          string    `json:"upazila,omitempty"`
+	Photo            string    `json:"photo,omitempty"`
 	Points           int       `json:"points"`
 	DonationCount    int       `json:"donation_count"`
 	Profession       string    `json:"profession,omitempty"`

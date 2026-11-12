@@ -208,3 +208,6 @@ api.bloodlinkapi.err.215: Conversation not found.
 api.bloodlinkapi.err.216: Message must be between 1 and 2000 characters.
 api.bloodlinkapi.err.217: Too many messages, slow down.
 api.bloodlinkapi.err.218: You can only message the author of a post you are interested in, or a donor interested in your post.
+api.bloodlinkapi.err.219: Image uploads are not available right now.
+api.bloodlinkapi.err.220: The image is invalid.
+api.bloodlinkapi.err.221: The image upload did not finish. Please try again.

@@ -219,4 +219,7 @@ const (
 	ErrorMessageInvalid                       = "api.bloodlinkapi.err.216" // message empty or too long (max 2000)
 	ErrorRateLimited                          = "api.bloodlinkapi.err.217" // too many requests
 	ErrorDirectChatNotAllowed                 = "api.bloodlinkapi.err.218" // direct chat needs a post author and an interested donor
+	ErrorImageUploadDisabled                  = "api.bloodlinkapi.err.219" // image uploads are not configured
+	ErrorImageInvalid                         = "api.bloodlinkapi.err.220" // invalid image target, public id, version or format
+	ErrorImageNotUploaded                     = "api.bloodlinkapi.err.221" // image not found on the image host
 )

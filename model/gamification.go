@@ -103,6 +103,7 @@ type LeaderboardEntry struct {
 	UserId        int    `json:"user_id"`
 	FirstName     string `json:"first_name"`
 	LastName      string `json:"last_name"`
+	Photo         string `json:"photo,omitempty"`
 	BloodGroup    string `json:"blood_group"`
 	District      string `json:"district"`
 	Upazila       string `json:"upazila"`
@@ -147,6 +148,7 @@ type InterestedDonor struct {
 	LastName      string    `json:"last_name"`
 	BloodGroup    string    `json:"blood_group"`
 	Phone         string    `json:"phone"`
+	Photo         string    `json:"photo,omitempty"`
 	District      string    `json:"district"`
 	Upazila       string    `json:"upazila"`
 	DonatedAt     string    `json:"donated_at,omitempty"`

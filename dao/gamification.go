@@ -56,7 +56,7 @@ func GetInterestedDonors(postID int) ([]model.InterestedDonor, error) {
 			COALESCE(u.upazila, ''), u.donated_at, u.points, u.donation_count,
 			COALESCE(b.name, ''),
 			EXISTS (SELECT 1 FROM donation_history h WHERE h.post_id = i.post_id AND h.donor_id = u.id),
-			i.created_at
+			i.created_at, COALESCE(u.photo, '')
 		FROM donation_post_interests i
 		JOIN users u ON u.id = i.user_id AND u.is_available = true
 		LEFT JOIN blood_bank_members m ON m.user_id = u.id AND m.status = 'active'
@@ -75,7 +75,7 @@ func GetInterestedDonors(postID int) ([]model.InterestedDonor, error) {
 		var donated, interested sql.NullTime
 		if err := rows.Scan(&d.UserId, &d.FirstName, &d.LastName, &d.BloodGroup, &d.Phone,
 			&d.District, &d.Upazila, &donated, &d.Points, &d.DonationCount, &d.BloodBankName,
-			&d.Confirmed, &interested); err != nil {
+			&d.Confirmed, &interested, &d.Photo); err != nil {
 			logger.GetLogger().LogErrors(err, nil)
 			return nil, model.UnknownError
 		}
@@ -386,7 +386,8 @@ func GetLeaderboard(f model.LeaderboardFilter) ([]model.LeaderboardEntry, error)
 			CASE WHEN COALESCE(u.hide_personal_info, false) THEN '' ELSE COALESCE(u.last_name, '') END,
 			COALESCE(u.blood_group, ''), COALESCE(u.district, ''), COALESCE(u.upazila, ''),
 			SUM(t.points)::int, (COUNT(*) FILTER (WHERE t.reason = 'donation'))::int,
-			COALESCE(b.id, 0), COALESCE(b.name, '')
+			COALESCE(b.id, 0), COALESCE(b.name, ''),
+			CASE WHEN COALESCE(u.hide_personal_info, false) THEN '' ELSE COALESCE(u.photo, '') END
 		FROM point_transactions t
 		JOIN users u ON u.id = t.user_id
 		LEFT JOIN blood_bank_members m ON m.user_id = u.id AND m.status = 'active'
@@ -408,7 +409,7 @@ func GetLeaderboard(f model.LeaderboardFilter) ([]model.LeaderboardEntry, error)
 	for rows.Next() {
 		var e model.LeaderboardEntry
 		if err := rows.Scan(&e.Rank, &e.UserId, &e.FirstName, &e.LastName, &e.BloodGroup, &e.District,
-			&e.Upazila, &e.Points, &e.Donations, &e.BloodBankId, &e.BloodBankName); err != nil {
+			&e.Upazila, &e.Points, &e.Donations, &e.BloodBankId, &e.BloodBankName, &e.Photo); err != nil {
 			logger.GetLogger().LogErrors(err, nil)
 			return nil, model.UnknownError
 		}

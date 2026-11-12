@@ -320,7 +320,7 @@ func GetBankMembers(id int, status string, session *model.Session) ([]model.Bank
 		if !isMember && !isManager {
 			m.Phone = ""
 			if m.HidePersonalInfo {
-				m.FirstName, m.LastName = "", ""
+				m.FirstName, m.LastName, m.Photo = "", "", ""
 			}
 		}
 	}

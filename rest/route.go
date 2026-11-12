@@ -92,6 +92,11 @@ func router() *mux.Router {
 	router.Methods("GET").Path("/badges").Name("getBadges").HandlerFunc(GetBadges)
 	router.Methods("GET").Path("/leaderboard").Name("getLeaderboard").HandlerFunc(GetLeaderboard)
 
+	// Images (Cloudinary direct uploads)
+	router.Methods("POST").Path("/image/signature").Name("signImageUpload").HandlerFunc(SignImageUpload)
+	router.Methods("PUT").Path("/image").Name("saveImage").HandlerFunc(SaveImage)
+	router.Methods("DELETE").Path("/image").Name("removeImage").HandlerFunc(RemoveImage)
+
 	// Realtime chat
 	router.Methods("GET").Path("/ws").Name("websocket").HandlerFunc(ServeWebsocket)
 	router.Methods("GET").Path("/conversations").Name("getConversations").HandlerFunc(GetConversations)

@@ -115,7 +115,9 @@ func Login(email string) (model.User, error) {
 	const query = `SELECT
 					 	id, first_name, last_name, gender, password, phone, city, address,
 					 	email, country, role_id, is_available, COALESCE(created_by, 0), created_at,
-						last_login, donated_at, is_verified, verification_code, is_password_temporary, hide_personal_info
+						last_login, donated_at, is_verified, verification_code, is_password_temporary, hide_personal_info,
+						COALESCE(division, ''), COALESCE(district, ''), COALESCE(upazila, ''), COALESCE(blood_group, ''),
+						COALESCE(photo, '')
 					FROM
 					  	users 
 					WHERE
@@ -127,6 +129,7 @@ func Login(email string) (model.User, error) {
 		&user.Password, &user.Phone, &user.City, &user.Address, &user.Email,
 		&user.Country, &user.IdRole, &user.IsAvailable, &user.CreatedBy, &user.CreatedAt,
 		&lastlogin, &donatedAt, &user.IsVerified, &user.VerificationCode, &user.IsPasswordTemporary, &user.HidePersonalInfo,
+		&user.Division, &user.District, &user.Upazila, &user.BloodGroup, &user.Photo,
 	)
 
 	if errors.Is(err, sql.ErrNoRows) {

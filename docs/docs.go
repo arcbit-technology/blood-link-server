@@ -1529,6 +1529,162 @@ const docTemplate = `{
                 }
             }
         },
+        "/image": {
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "images"
+                ],
+                "summary": "save an uploaded image as profile photo / blood bank logo / cover",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "\"Bearer YOUR_ACCESS_TOKEN\"",
+                        "description": "Bearer Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "target, blood_bank_id, public_id, version, format (from the Cloudinary upload response)",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.SaveImageRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.SavedImage"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "images"
+                ],
+                "summary": "remove a profile photo / blood bank logo / cover",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "\"Bearer YOUR_ACCESS_TOKEN\"",
+                        "description": "Bearer Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "user_avatar | bank_logo | bank_cover",
+                        "name": "target",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "blood bank id",
+                        "name": "blood_bank_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.SavedImage"
+                        }
+                    }
+                }
+            }
+        },
+        "/image/signature": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "target: user_avatar (own photo) | bank_logo | bank_cover (blood bank admin). Upload the file to upload_url with public_id, timestamp, signature, api_key, overwrite, invalidate and allowed_formats exactly as returned, then call PUT /image.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "images"
+                ],
+                "summary": "sign a direct image upload to Cloudinary",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "\"Bearer YOUR_ACCESS_TOKEN\"",
+                        "description": "Bearer Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "target, blood_bank_id",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ImageTargetRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/cloudinary.SignedUpload"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "503": {
+                        "description": "Service Unavailable",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/leaderboard": {
             "get": {
                 "produces": [
@@ -2797,6 +2953,38 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "cloudinary.SignedUpload": {
+            "type": "object",
+            "properties": {
+                "allowed_formats": {
+                    "type": "string"
+                },
+                "api_key": {
+                    "type": "string"
+                },
+                "cloud_name": {
+                    "type": "string"
+                },
+                "invalidate": {
+                    "type": "string"
+                },
+                "overwrite": {
+                    "type": "string"
+                },
+                "public_id": {
+                    "type": "string"
+                },
+                "signature": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "integer"
+                },
+                "upload_url": {
+                    "type": "string"
+                }
+            }
+        },
         "model.Badge": {
             "type": "object",
             "properties": {
@@ -2856,6 +3044,9 @@ const docTemplate = `{
                 "phone": {
                     "type": "string"
                 },
+                "photo": {
+                    "type": "string"
+                },
                 "points": {
                     "type": "integer"
                 },
@@ -2908,6 +3099,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "contact_phone": {
+                    "type": "string"
+                },
+                "cover": {
                     "type": "string"
                 },
                 "created_at": {
@@ -2992,6 +3186,9 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "last_name": {
+                    "type": "string"
+                },
+                "photo": {
                     "type": "string"
                 }
             }
@@ -3197,6 +3394,9 @@ const docTemplate = `{
                 "phone": {
                     "type": "string"
                 },
+                "photo": {
+                    "type": "string"
+                },
                 "points": {
                     "type": "integer"
                 },
@@ -3268,6 +3468,17 @@ const docTemplate = `{
                 }
             }
         },
+        "model.ImageTargetRequest": {
+            "type": "object",
+            "properties": {
+                "blood_bank_id": {
+                    "type": "integer"
+                },
+                "target": {
+                    "type": "string"
+                }
+            }
+        },
         "model.InterestedDonor": {
             "type": "object",
             "properties": {
@@ -3306,6 +3517,9 @@ const docTemplate = `{
                 "phone": {
                     "type": "string"
                 },
+                "photo": {
+                    "type": "string"
+                },
                 "points": {
                     "type": "integer"
                 },
@@ -3339,6 +3553,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "last_name": {
+                    "type": "string"
+                },
+                "photo": {
                     "type": "string"
                 },
                 "points": {
@@ -3419,6 +3636,9 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "sender_name": {
+                    "type": "string"
+                },
+                "sender_photo": {
                     "type": "string"
                 }
             }
@@ -3564,6 +3784,37 @@ const docTemplate = `{
                 }
             }
         },
+        "model.SaveImageRequest": {
+            "type": "object",
+            "properties": {
+                "blood_bank_id": {
+                    "type": "integer"
+                },
+                "format": {
+                    "type": "string"
+                },
+                "public_id": {
+                    "type": "string"
+                },
+                "target": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.SavedImage": {
+            "type": "object",
+            "properties": {
+                "target": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
         "model.SendMessageRequest": {
             "type": "object",
             "properties": {
@@ -3656,6 +3907,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "phone": {
+                    "type": "string"
+                },
+                "photo": {
                     "type": "string"
                 },
                 "profession": {

@@ -20,7 +20,8 @@ const donorColumns = `
 	COALESCE(u.district, ''), COALESCE(u.division, ''), COALESCE(u.upazila, ''), COALESCE(u.profession, ''),
 	u.donated_at,
 	COALESCE(u.hide_personal_info, false), COALESCE(u.is_verified, false),
-	u.created_at, u.points, u.donation_count`
+	u.created_at, u.points, u.donation_count,
+	CASE WHEN COALESCE(u.hide_personal_info, false) THEN '' ELSE COALESCE(u.photo, '') END`
 
 // donors are active, non-admin accounts
 var donorBaseWhere = fmt.Sprintf(`u.is_available = TRUE AND u.role_id NOT IN (%d, %d)`,
@@ -32,7 +33,7 @@ func scanDonor(row interface{ Scan(...any) error }) (model.Donor, error) {
 	err := row.Scan(
 		&d.Id, &d.Firstname, &d.Lastname, &d.Gender, &d.BloodGroup, &d.Age,
 		&d.Phone, &d.Address, &d.City, &d.District, &d.Division, &d.Upazila, &d.Profession,
-		&donatedAt, &d.HidePersonalInfo, &d.IsVerified, &createdAt, &d.Points, &d.DonationCount,
+		&donatedAt, &d.HidePersonalInfo, &d.IsVerified, &createdAt, &d.Points, &d.DonationCount, &d.Photo,
 	)
 	if donatedAt.Valid {
 		d.DonatedAt = donatedAt.Time.Format("2006-01-02")

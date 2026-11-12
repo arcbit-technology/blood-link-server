@@ -69,6 +69,22 @@ type appConfig struct {
 	Account Account `json:"ACCOUNT"`
 
 	VOIP_DETAIL VOIP_CREDENTIALS `json:"VOIP_CREDENTIALS"`
+
+	Cloudinary CLOUDINARY `json:"CLOUDINARY"`
+}
+
+// CLOUDINARY holds the image hosting credentials. The CLOUDINARY_CLOUD_NAME,
+// CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET environment variables
+// override config.json.
+type CLOUDINARY struct {
+	CloudName string `json:"CLOUD_NAME"`
+	ApiKey    string `json:"API_KEY"`
+	ApiSecret string `json:"API_SECRET"`
+}
+
+// Configured reports whether image uploads can be signed.
+func (c CLOUDINARY) Configured() bool {
+	return c.CloudName != "" && c.ApiKey != "" && c.ApiSecret != ""
 }
 
 type Account struct {
@@ -287,6 +303,9 @@ func decryptParam(param appConfig) appConfig {
 	param.StripeSecretKey = security.Decrypt(param.StripeSecretKey)
 	param.StripePublishableKey = security.Decrypt(param.StripePublishableKey)
 	param.StripeWebhookSecret = security.Decrypt(param.StripeWebhookSecret)
+	param.Cloudinary.CloudName = security.Decrypt(param.Cloudinary.CloudName)
+	param.Cloudinary.ApiKey = security.Decrypt(param.Cloudinary.ApiKey)
+	param.Cloudinary.ApiSecret = security.Decrypt(param.Cloudinary.ApiSecret)
 
 	for key, service := range param.Services {
 		service.Hostname = security.Decrypt(service.Hostname)
@@ -418,6 +437,16 @@ func replaceParam(param appConfig) appConfig {
 		"$PSWD", param.BasePassword, -1)
 	param.ConnString = strings.Replace(param.ConnString,
 		"$DBNAME", param.BaseName, -1)
+
+	for env, dst := range map[string]*string{
+		"CLOUDINARY_CLOUD_NAME": &param.Cloudinary.CloudName,
+		"CLOUDINARY_API_KEY":    &param.Cloudinary.ApiKey,
+		"CLOUDINARY_API_SECRET": &param.Cloudinary.ApiSecret,
+	} {
+		if v := strings.TrimSpace(os.Getenv(env)); v != "" {
+			*dst = v
+		}
+	}
 
 	return param
 }

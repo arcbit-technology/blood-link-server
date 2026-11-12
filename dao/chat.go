@@ -116,8 +116,8 @@ func InsertMessage(convID, senderID int, body string) (model.Message, error) {
 		logger.GetLogger().LogErrors(err, nil)
 		return m, model.UnknownError
 	}
-	if err = tx.QueryRow(`SELECT TRIM(COALESCE(first_name, '') || ' ' || COALESCE(last_name, ''))
-		FROM users WHERE id = $1`, senderID).Scan(&m.SenderName); err != nil {
+	if err = tx.QueryRow(`SELECT TRIM(COALESCE(first_name, '') || ' ' || COALESCE(last_name, '')), COALESCE(photo, '')
+		FROM users WHERE id = $1`, senderID).Scan(&m.SenderName, &m.SenderPhoto); err != nil {
 		logger.GetLogger().LogErrors(err, nil)
 		return m, model.UnknownError
 	}
@@ -135,7 +135,7 @@ func GetMessages(convID int, beforeID int64, size int) ([]model.Message, error) 
 	rows, err := DB.Query(`SELECT * FROM (
 			SELECT m.id, m.conversation_id, COALESCE(m.sender_id, 0),
 				TRIM(COALESCE(u.first_name, '') || ' ' || COALESCE(u.last_name, '')),
-				m.body, m.created_at
+				m.body, m.created_at, COALESCE(u.photo, '')
 			FROM messages m LEFT JOIN users u ON u.id = m.sender_id
 			WHERE m.conversation_id = $1 AND m.deleted_at IS NULL AND ($2::bigint = 0 OR m.id < $2::bigint)
 			ORDER BY m.id DESC LIMIT $3
@@ -149,7 +149,7 @@ func GetMessages(convID int, beforeID int64, size int) ([]model.Message, error) 
 	list := []model.Message{}
 	for rows.Next() {
 		var m model.Message
-		if err := rows.Scan(&m.Id, &m.ConversationId, &m.SenderId, &m.SenderName, &m.Body, &m.CreatedAt); err != nil {
+		if err := rows.Scan(&m.Id, &m.ConversationId, &m.SenderId, &m.SenderName, &m.Body, &m.CreatedAt, &m.SenderPhoto); err != nil {
 			logger.GetLogger().LogErrors(err, nil)
 			return nil, model.UnknownError
 		}
@@ -172,7 +172,7 @@ func MarkRead(convID, userID int, messageID int64) error {
 const conversationColumns = `
 	c.id, c.type, COALESCE(c.blood_bank_id, 0), COALESCE(b.name, ''),
 	COALESCE(c.post_id, 0), COALESCE(p.title, ''),
-	COALESCE(o.id, 0), COALESCE(o.first_name, ''), COALESCE(o.last_name, ''),
+	COALESCE(o.id, 0), COALESCE(o.first_name, ''), COALESCE(o.last_name, ''), COALESCE(o.photo, ''),
 	lm.id, COALESCE(lm.sender_id, 0),
 	TRIM(COALESCE(lu.first_name, '') || ' ' || COALESCE(lu.last_name, '')),
 	COALESCE(lm.body, ''), lm.created_at,
@@ -199,7 +199,7 @@ func scanConversation(row rowScanner) (model.Conversation, error) {
 	var lmSenderName, lmBody string
 	var lmAt, lastAt sql.NullTime
 	err := row.Scan(&c.Id, &c.Type, &c.BloodBankId, &c.BloodBankName, &c.PostId, &c.PostTitle,
-		&other.Id, &other.FirstName, &other.LastName,
+		&other.Id, &other.FirstName, &other.LastName, &other.Photo,
 		&lmID, &lmSender, &lmSenderName, &lmBody, &lmAt,
 		&c.UnreadCount, &lastAt, &c.CreatedAt)
 	if err != nil {

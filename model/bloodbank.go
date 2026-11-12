@@ -42,6 +42,7 @@ type BloodBank struct {
 	Address         string     `json:"address"`
 	ContactPhone    string     `json:"contact_phone"`
 	Logo            string     `json:"logo"`
+	Cover           string     `json:"cover"`
 	Status          string     `json:"status"`
 	AdminId         int        `json:"admin_id"`
 	AdminName       string     `json:"admin_name"`
@@ -82,6 +83,7 @@ type BankMember struct {
 	Points        int        `json:"points"`
 	DonationCount int        `json:"donation_count"`
 	DonatedAt     string     `json:"donated_at,omitempty"`
+	Photo         string     `json:"photo,omitempty"`
 	JoinedAt      *time.Time `json:"joined_at,omitempty"`
 	CreatedAt     time.Time  `json:"created_at"`
 

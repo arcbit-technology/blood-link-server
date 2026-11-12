@@ -22,7 +22,7 @@ const bankColumns = `
 	(SELECT COUNT(*) FROM donation_history h WHERE h.blood_bank_id = b.id),
 	(SELECT COALESCE(SUM(mu.points), 0) FROM blood_bank_members m
 	   JOIN users mu ON mu.id = m.user_id WHERE m.blood_bank_id = b.id AND m.status = 'active'),
-	b.created_at`
+	b.created_at, COALESCE(b.cover, '')`
 
 const bankFrom = ` FROM blood_banks b
 	JOIN users a ON a.id = b.admin_id
@@ -36,7 +36,7 @@ func scanBank(row rowScanner) (model.BloodBank, error) {
 		&b.Address, &b.ContactPhone, &b.Logo, &b.Status,
 		&b.AdminId, &b.AdminName, &b.CreatedBy, &b.CreatedByName,
 		&reviewed, &b.RejectionReason, &b.MemberCount, &b.DonationCount, &b.TotalPoints,
-		&b.CreatedAt,
+		&b.CreatedAt, &b.Cover,
 	)
 	if reviewed.Valid {
 		t := reviewed.Time
@@ -163,12 +163,12 @@ func GetPendingBankRequest(userID int) (*model.BloodBank, error) {
 	return &b, nil
 }
 
-// UpdateBloodBank edits the descriptive fields of a bank.
+// UpdateBloodBank edits the descriptive fields of a bank (logo and cover
+// are set through the image endpoints).
 func UpdateBloodBank(id int, b model.BloodBank) error {
 	_, err := DB.Exec(`UPDATE blood_banks SET name = $2, description = NULLIF($3, ''),
-			address = NULLIF($4, ''), contact_phone = NULLIF($5, ''), logo = NULLIF($6, ''),
-			updated_at = now()
-		WHERE id = $1`, id, b.Name, b.Description, b.Address, b.ContactPhone, b.Logo)
+			address = NULLIF($4, ''), contact_phone = NULLIF($5, ''), updated_at = now()
+		WHERE id = $1`, id, b.Name, b.Description, b.Address, b.ContactPhone)
 	if err != nil {
 		logger.GetLogger().LogErrors(err, nil)
 		return model.UnknownError
@@ -273,14 +273,14 @@ const memberColumns = `
 	m.id, m.blood_bank_id, m.user_id, COALESCE(u.first_name, ''), COALESCE(u.last_name, ''),
 	COALESCE(u.blood_group, ''), COALESCE(u.phone, ''), COALESCE(u.upazila, ''),
 	m.role, COALESCE(m.position, ''), m.status, u.points, u.donation_count, u.donated_at,
-	m.joined_at, m.created_at, COALESCE(u.hide_personal_info, false)`
+	m.joined_at, m.created_at, COALESCE(u.hide_personal_info, false), COALESCE(u.photo, '')`
 
 func scanMember(row rowScanner) (model.BankMember, error) {
 	var m model.BankMember
 	var donated, joined sql.NullTime
 	err := row.Scan(&m.Id, &m.BloodBankId, &m.UserId, &m.FirstName, &m.LastName,
 		&m.BloodGroup, &m.Phone, &m.Upazila, &m.Role, &m.Position, &m.Status,
-		&m.Points, &m.DonationCount, &donated, &joined, &m.CreatedAt, &m.HidePersonalInfo)
+		&m.Points, &m.DonationCount, &donated, &joined, &m.CreatedAt, &m.HidePersonalInfo, &m.Photo)
 	if donated.Valid {
 		m.DonatedAt = donated.Time.Format("2006-01-02")
 	}

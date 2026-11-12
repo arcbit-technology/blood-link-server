@@ -13,6 +13,7 @@ type ChatUser struct {
 	Id        int    `json:"id"`
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
+	Photo     string `json:"photo,omitempty"`
 }
 
 type Message struct {
@@ -20,6 +21,7 @@ type Message struct {
 	ConversationId int       `json:"conversation_id"`
 	SenderId       int       `json:"sender_id"`
 	SenderName     string    `json:"sender_name"`
+	SenderPhoto    string    `json:"sender_photo,omitempty"`
 	Body           string    `json:"body"`
 	CreatedAt      time.Time `json:"created_at"`
 }
