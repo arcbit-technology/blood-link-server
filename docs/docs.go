@@ -17,6 +17,11 @@ const docTemplate = `{
     "paths": {
         "/auth/fetchlogindata": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "that route is use to fetch login data",
                 "consumes": [
                     "application/json"
@@ -63,12 +68,7 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
-                },
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ]
+                }
             }
         },
         "/auth/{provider}": {
@@ -135,8 +135,775 @@ const docTemplate = `{
                 }
             }
         },
+        "/badges": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "gamification"
+                ],
+                "summary": "all badges that can be earned",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Badge"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/blood-bank": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "any donor can request a blood bank for an upazila; a platform admin approves it and the creator becomes its admin",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "blood banks"
+                ],
+                "summary": "request a new blood bank",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "\"Bearer YOUR_ACCESS_TOKEN\"",
+                        "description": "Bearer Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "name, description, division, district, upazila, address, contact_phone",
+                        "name": "bank",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.BloodBank"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.BloodBank"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/blood-bank/mine": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "blood banks"
+                ],
+                "summary": "the caller's blood bank membership and pending creation request",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "\"Bearer YOUR_ACCESS_TOKEN\"",
+                        "description": "Bearer Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.MyBloodBank"
+                        }
+                    }
+                }
+            }
+        },
+        "/blood-bank/{id}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "blood banks"
+                ],
+                "summary": "get a blood bank",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "blood bank id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.BloodBank"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "blood banks"
+                ],
+                "summary": "edit a blood bank (bank admin)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "\"Bearer YOUR_ACCESS_TOKEN\"",
+                        "description": "Bearer Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "blood bank id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "name, description, address, contact_phone, logo",
+                        "name": "bank",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.BloodBank"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.BloodBank"
+                        }
+                    }
+                }
+            }
+        },
+        "/blood-bank/{id}/conversation": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "blood banks"
+                ],
+                "summary": "the blood bank's group chat (members only)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "\"Bearer YOUR_ACCESS_TOKEN\"",
+                        "description": "Bearer Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "blood bank id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Conversation"
+                        }
+                    }
+                }
+            }
+        },
+        "/blood-bank/{id}/join": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "blood banks"
+                ],
+                "summary": "ask to join a blood bank",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "\"Bearer YOUR_ACCESS_TOKEN\"",
+                        "description": "Bearer Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "blood bank id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.MyBloodBank"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/blood-bank/{id}/leaderboard": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "gamification"
+                ],
+                "summary": "top donors of a blood bank",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "blood bank id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "all (default) | month",
+                        "name": "period",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.LeaderboardEntry"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/blood-bank/{id}/member/{userId}": {
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "blood banks"
+                ],
+                "summary": "remove a member (bank admin / officer)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "\"Bearer YOUR_ACCESS_TOKEN\"",
+                        "description": "Bearer Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "blood bank id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "user id",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/blood-bank/{id}/member/{userId}/role": {
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "blood banks"
+                ],
+                "summary": "set a member's role and position (bank admin)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "\"Bearer YOUR_ACCESS_TOKEN\"",
+                        "description": "Bearer Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "blood bank id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "user id",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "role (officer | member), position",
+                        "name": "role",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.BankMemberRoleUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.BankMember"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/blood-bank/{id}/member/{userId}/{action}": {
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "blood banks"
+                ],
+                "summary": "approve or reject a join request (bank admin / officer)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "\"Bearer YOUR_ACCESS_TOKEN\"",
+                        "description": "Bearer Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "blood bank id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "user id",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "approve | reject",
+                        "name": "action",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/blood-bank/{id}/members": {
+            "get": {
+                "description": "active members are public; pending requests are visible to the bank admin and officers",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "blood banks"
+                ],
+                "summary": "list blood bank members",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "blood bank id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "active (default) | pending",
+                        "name": "status",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.BankMember"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/blood-bank/{id}/membership": {
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "the bank admin must transfer admin first",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "blood banks"
+                ],
+                "summary": "leave a blood bank or cancel a join request",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "\"Bearer YOUR_ACCESS_TOKEN\"",
+                        "description": "Bearer Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "blood bank id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/blood-bank/{id}/transfer-admin": {
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "blood banks"
+                ],
+                "summary": "hand the bank admin role to another active member",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "\"Bearer YOUR_ACCESS_TOKEN\"",
+                        "description": "Bearer Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "blood bank id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "user_id",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.TransferAdmin"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.BloodBank"
+                        }
+                    }
+                }
+            }
+        },
+        "/blood-bank/{id}/{action}": {
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "approve: pending or suspended -\u003e approved; reject: pending -\u003e rejected; suspend: approved -\u003e suspended. reject and suspend need a reason.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "blood banks"
+                ],
+                "summary": "approve, reject or suspend a blood bank (platform admin)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "\"Bearer YOUR_ACCESS_TOKEN\"",
+                        "description": "Bearer Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "blood bank id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "approve | reject | suspend",
+                        "name": "action",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "reason",
+                        "name": "review",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/model.BankReview"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.BloodBank"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/blood-banks": {
+            "get": {
+                "description": "approved blood banks; platform admins may filter by status (pending | approved | rejected | suspended | all)",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "blood banks"
+                ],
+                "summary": "list blood banks",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Division",
+                        "name": "division",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "District",
+                        "name": "district",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Upazila / thana",
+                        "name": "upazila",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search name, description, location",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "admin only",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 30,
+                        "description": "Page size (max 100)",
+                        "name": "size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.PaginatedResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/changepassword/{id}": {
             "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "this route is used to change or reset password of the user",
                 "consumes": [
                     "application/json"
@@ -193,16 +960,16 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
-                },
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ]
+                }
             }
         },
         "/changetemppassword": {
             "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "this route is used to change the temporary password of the user",
                 "consumes": [
                     "application/json"
@@ -258,12 +1025,415 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
-                },
+                }
+            }
+        },
+        "/conversation/direct": {
+            "post": {
                 "security": [
                     {
                         "Bearer": []
                     }
-                ]
+                ],
+                "description": "allowed between the post author and a user interested in the post",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chat"
+                ],
+                "summary": "open a 1:1 chat about a post",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "\"Bearer YOUR_ACCESS_TOKEN\"",
+                        "description": "Bearer Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "post_id, user_id",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.DirectConversationRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Conversation"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/conversation/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chat"
+                ],
+                "summary": "one of the caller's conversations",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "\"Bearer YOUR_ACCESS_TOKEN\"",
+                        "description": "Bearer Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "conversation id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Conversation"
+                        }
+                    }
+                }
+            }
+        },
+        "/conversation/{id}/message": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chat"
+                ],
+                "summary": "send a message (REST fallback of the websocket \"send\" event)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "\"Bearer YOUR_ACCESS_TOKEN\"",
+                        "description": "Bearer Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "conversation id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "body, client_id",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.SendMessageRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    }
+                }
+            }
+        },
+        "/conversation/{id}/messages": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chat"
+                ],
+                "summary": "message history, oldest first",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "\"Bearer YOUR_ACCESS_TOKEN\"",
+                        "description": "Bearer Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "conversation id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "only messages older than this id",
+                        "name": "before_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 50,
+                        "description": "max 100",
+                        "name": "size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Message"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/conversation/{id}/read": {
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chat"
+                ],
+                "summary": "mark messages up to message_id as read",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "\"Bearer YOUR_ACCESS_TOKEN\"",
+                        "description": "Bearer Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "conversation id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "last read message id",
+                        "name": "message_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/conversations": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chat"
+                ],
+                "summary": "the caller's conversations with last message and unread count",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "\"Bearer YOUR_ACCESS_TOKEN\"",
+                        "description": "Bearer Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Conversation"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/doner/{id}": {
+            "get": {
+                "description": "public profile of a single donor",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "donors"
+                ],
+                "summary": "get donor",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "donor id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Donor"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/doners": {
+            "get": {
+                "description": "public donor directory with filters and pagination. Personal details are hidden for donors who opted out.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "donors"
+                ],
+                "summary": "list donors",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Blood group, e.g. A+ (URL-encoded as A%2B)",
+                        "name": "blood_group",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Division",
+                        "name": "division",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "District",
+                        "name": "district",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "male | female | others",
+                        "name": "gender",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search by name, district, city, profession",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 12,
+                        "description": "Page size (max 100)",
+                        "name": "size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.PaginatedResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
             }
         },
         "/forgotpassword": {
@@ -314,6 +1484,11 @@ const docTemplate = `{
         },
         "/iftokenvalid": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "this route is used to check if the token is valid",
                 "produces": [
                     "application/json"
@@ -351,12 +1526,62 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
-                },
-                "security": [
+                }
+            }
+        },
+        "/leaderboard": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "gamification"
+                ],
+                "summary": "top donors by points",
+                "parameters": [
                     {
-                        "Bearer": []
+                        "type": "string",
+                        "description": "global (default) | division | district | upazila | bank",
+                        "name": "scope",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "division / district / upazila name",
+                        "name": "value",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "blood bank id (scope=bank)",
+                        "name": "bank_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "all (default) | month",
+                        "name": "period",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 20,
+                        "description": "max 100",
+                        "name": "size",
+                        "in": "query"
                     }
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.LeaderboardEntry"
+                            }
+                        }
+                    }
+                }
             }
         },
         "/login": {
@@ -407,6 +1632,11 @@ const docTemplate = `{
         },
         "/login/{profiletype}": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "that route is use to log into profile",
                 "consumes": [
                     "application/json"
@@ -460,16 +1690,16 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
-                },
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ]
+                }
             }
         },
         "/logout": {
             "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "that route is use to log out the app",
                 "consumes": [
                     "application/json"
@@ -510,12 +1740,7 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
-                },
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ]
+                }
             }
         },
         "/myip": {
@@ -561,8 +1786,359 @@ const docTemplate = `{
                 }
             }
         },
+        "/post": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "posts"
+                ],
+                "summary": "create a blood request post",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "\"Bearer YOUR_ACCESS_TOKEN\"",
+                        "description": "Bearer Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "title, blood_group, description, hospital_name, address, division, district, required_date (YYYY-MM-DD), units_needed, contact_phone",
+                        "name": "post",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.DonationPost"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.DonationPost"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/post/{id}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "posts"
+                ],
+                "summary": "get a blood request post",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "post id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.DonationPost"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/post/{id}/confirm-donation": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "awards the donor points and badges; marks the post fulfilled once enough units are confirmed",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "posts"
+                ],
+                "summary": "confirm that an interested donor donated (post author only)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "\"Bearer YOUR_ACCESS_TOKEN\"",
+                        "description": "Bearer Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "post id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "donor_id, units, donation_date (YYYY-MM-DD)",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ConfirmDonation"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.DonationConfirmation"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/post/{id}/interest": {
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "toggles the logged-in user's interest; returns the updated post",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "posts"
+                ],
+                "summary": "express or withdraw interest in a post",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "\"Bearer YOUR_ACCESS_TOKEN\"",
+                        "description": "Bearer Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "post id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.DonationPost"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/post/{id}/interests": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "posts"
+                ],
+                "summary": "donors interested in a post (post author only)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "\"Bearer YOUR_ACCESS_TOKEN\"",
+                        "description": "Bearer Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "post id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.InterestedDonor"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/posts": {
+            "get": {
+                "description": "public list of blood request posts, open ones first",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "posts"
+                ],
+                "summary": "list blood request posts",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "open | fulfilled | closed",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Blood group, e.g. A+ (URL-encoded as A%2B)",
+                        "name": "blood_group",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Division",
+                        "name": "division",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "District",
+                        "name": "district",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search title, description, hospital, district",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 30,
+                        "description": "Page size (max 100)",
+                        "name": "size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.PaginatedResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/profilecomplete": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "this route is used to get the profile complete percentage of the user",
                 "consumes": [
                     "application/json"
@@ -603,12 +2179,7 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
-                },
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ]
+                }
             }
         },
         "/register": {
@@ -671,6 +2242,11 @@ const docTemplate = `{
         },
         "/resetpassword/{id}": {
             "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "this route is used to change or reset password of the user",
                 "consumes": [
                     "application/json"
@@ -727,16 +2303,16 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
-                },
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ]
+                }
             }
         },
         "/user": {
             "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "this route is used to create a new user",
                 "consumes": [
                     "application/json"
@@ -786,16 +2362,16 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
-                },
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ]
+                }
             }
         },
         "/user/{id}": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "this route is used to get a user by id",
                 "consumes": [
                     "application/json"
@@ -843,14 +2419,14 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
-                },
+                }
+            },
+            "put": {
                 "security": [
                     {
                         "Bearer": []
                     }
-                ]
-            },
-            "put": {
+                ],
                 "description": "this route is used to update an existing user",
                 "consumes": [
                     "application/json"
@@ -907,14 +2483,14 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
-                },
+                }
+            },
+            "delete": {
                 "security": [
                     {
                         "Bearer": []
                     }
-                ]
-            },
-            "delete": {
+                ],
                 "description": "this route is used to delete an existing user",
                 "consumes": [
                     "application/json"
@@ -962,16 +2538,16 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
-                },
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ]
+                }
             }
         },
         "/user/{id}/disable": {
             "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "this route is used to delete an existing user",
                 "consumes": [
                     "application/json"
@@ -1019,16 +2595,16 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
-                },
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ]
+                }
             }
         },
         "/user/{id}/enable": {
             "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "this route is used to delete an existing user",
                 "consumes": [
                     "application/json"
@@ -1076,16 +2652,44 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
-                },
-                "security": [
+                }
+            }
+        },
+        "/user/{id}/gamification": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "gamification"
+                ],
+                "summary": "a user's points, level, rank and badges",
+                "parameters": [
                     {
-                        "Bearer": []
+                        "type": "integer",
+                        "description": "user id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
-                ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.GamificationProfile"
+                        }
+                    }
+                }
             }
         },
         "/users": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "this route is used to get all the users",
                 "consumes": [
                     "application/json"
@@ -1140,12 +2744,7 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
-                },
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ]
+                }
             }
         },
         "/verify/{code}": {
@@ -1176,9 +2775,191 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/ws": {
+            "get": {
+                "description": "browsers cannot set headers on websockets, so the token is sent as ?token=.\nclient -\u003e server: {type: send|typing|read|ping, conversation_id, body, client_id, message_id}\nserver -\u003e client: {type: message|typing|read|notification|error|pong, ...}",
+                "tags": [
+                    "chat"
+                ],
+                "summary": "realtime websocket (chat + notifications)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "access token",
+                        "name": "token",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            }
         }
     },
     "definitions": {
+        "model.Badge": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "kind": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "threshold": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.BankMember": {
+            "type": "object",
+            "properties": {
+                "blood_bank_id": {
+                    "type": "integer"
+                },
+                "blood_group": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "donated_at": {
+                    "type": "string"
+                },
+                "donation_count": {
+                    "type": "integer"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "joined_at": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "points": {
+                    "type": "integer"
+                },
+                "position": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "upazila": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.BankMemberRoleUpdate": {
+            "type": "object",
+            "properties": {
+                "position": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.BankReview": {
+            "type": "object",
+            "properties": {
+                "reason": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.BloodBank": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "admin_id": {
+                    "type": "integer"
+                },
+                "admin_name": {
+                    "type": "string"
+                },
+                "contact_phone": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by": {
+                    "type": "integer"
+                },
+                "created_by_name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "district": {
+                    "type": "string"
+                },
+                "division": {
+                    "type": "string"
+                },
+                "donation_count": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "logo": {
+                    "type": "string"
+                },
+                "member_count": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "rejection_reason": {
+                    "type": "string"
+                },
+                "reviewed_at": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "total_points": {
+                    "type": "integer"
+                },
+                "upazila": {
+                    "type": "string"
+                }
+            }
+        },
         "model.ChangePassword": {
             "type": "object",
             "properties": {
@@ -1201,6 +2982,232 @@ const docTemplate = `{
                 }
             }
         },
+        "model.ChatUser": {
+            "type": "object",
+            "properties": {
+                "first_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "last_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ConfirmDonation": {
+            "type": "object",
+            "properties": {
+                "donation_date": {
+                    "description": "YYYY-MM-DD, defaults to today",
+                    "type": "string"
+                },
+                "donor_id": {
+                    "type": "integer"
+                },
+                "units": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.Conversation": {
+            "type": "object",
+            "properties": {
+                "blood_bank_id": {
+                    "type": "integer"
+                },
+                "blood_bank_name": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "last_message": {
+                    "$ref": "#/definitions/model.Message"
+                },
+                "last_message_at": {
+                    "type": "string"
+                },
+                "other_user": {
+                    "$ref": "#/definitions/model.ChatUser"
+                },
+                "post_id": {
+                    "type": "integer"
+                },
+                "post_title": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "unread_count": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.DirectConversationRequest": {
+            "type": "object",
+            "properties": {
+                "post_id": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.DonationConfirmation": {
+            "type": "object",
+            "properties": {
+                "donor_id": {
+                    "type": "integer"
+                },
+                "history_id": {
+                    "type": "integer"
+                },
+                "new_badges": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Badge"
+                    }
+                },
+                "points_awarded": {
+                    "type": "integer"
+                },
+                "total_points": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.DonationPost": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "author_id": {
+                    "type": "integer"
+                },
+                "author_name": {
+                    "description": "empty when the author hides personal info",
+                    "type": "string"
+                },
+                "blood_group": {
+                    "type": "string"
+                },
+                "contact_phone": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "district": {
+                    "type": "string"
+                },
+                "division": {
+                    "type": "string"
+                },
+                "hospital_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "interested_users": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "required_date": {
+                    "description": "YYYY-MM-DD",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "open | fulfilled | closed",
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "units_needed": {
+                    "type": "integer"
+                },
+                "urgency": {
+                    "description": "normal | urgent | emergency",
+                    "type": "string"
+                }
+            }
+        },
+        "model.Donor": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "age": {
+                    "type": "integer"
+                },
+                "blood_group": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "district": {
+                    "type": "string"
+                },
+                "division": {
+                    "type": "string"
+                },
+                "donated_at": {
+                    "type": "string"
+                },
+                "donation_count": {
+                    "type": "integer"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "hide_personal_info": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "is_verified": {
+                    "type": "boolean"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "points": {
+                    "type": "integer"
+                },
+                "profession": {
+                    "type": "string"
+                },
+                "upazila": {
+                    "type": "string"
+                }
+            }
+        },
         "model.ForgotPasswordRequest": {
             "type": "object",
             "properties": {
@@ -1216,6 +3223,145 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "new_password": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.GamificationProfile": {
+            "type": "object",
+            "properties": {
+                "all_badges": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Badge"
+                    }
+                },
+                "badges": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.UserBadge"
+                    }
+                },
+                "donation_count": {
+                    "type": "integer"
+                },
+                "level": {
+                    "$ref": "#/definitions/model.Level"
+                },
+                "next_level": {
+                    "$ref": "#/definitions/model.Level"
+                },
+                "points": {
+                    "type": "integer"
+                },
+                "rank": {
+                    "type": "integer"
+                },
+                "recent": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.PointTransaction"
+                    }
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.InterestedDonor": {
+            "type": "object",
+            "properties": {
+                "blood_bank_name": {
+                    "type": "string"
+                },
+                "blood_group": {
+                    "type": "string"
+                },
+                "confirmed": {
+                    "description": "already confirmed for this post",
+                    "type": "boolean"
+                },
+                "district": {
+                    "type": "string"
+                },
+                "donated_at": {
+                    "type": "string"
+                },
+                "donation_count": {
+                    "type": "integer"
+                },
+                "eligible": {
+                    "description": "90 days since last donation",
+                    "type": "boolean"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "interested_at": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "points": {
+                    "type": "integer"
+                },
+                "upazila": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.LeaderboardEntry": {
+            "type": "object",
+            "properties": {
+                "blood_bank_id": {
+                    "type": "integer"
+                },
+                "blood_bank_name": {
+                    "type": "string"
+                },
+                "blood_group": {
+                    "type": "string"
+                },
+                "district": {
+                    "type": "string"
+                },
+                "donations": {
+                    "type": "integer"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "points": {
+                    "type": "integer"
+                },
+                "rank": {
+                    "type": "integer"
+                },
+                "upazila": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.Level": {
+            "type": "object",
+            "properties": {
+                "min_points": {
+                    "type": "integer"
+                },
+                "name": {
                     "type": "string"
                 }
             }
@@ -1254,6 +3400,43 @@ const docTemplate = `{
                 }
             }
         },
+        "model.Message": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "type": "string"
+                },
+                "conversation_id": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "sender_id": {
+                    "type": "integer"
+                },
+                "sender_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.MyBloodBank": {
+            "type": "object",
+            "properties": {
+                "bank": {
+                    "$ref": "#/definitions/model.BloodBank"
+                },
+                "membership": {
+                    "$ref": "#/definitions/model.BankMember"
+                },
+                "pending_request": {
+                    "$ref": "#/definitions/model.BloodBank"
+                }
+            }
+        },
         "model.PaginatedResponse": {
             "type": "object",
             "properties": {
@@ -1279,6 +3462,29 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.PointTransaction": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "points": {
+                    "type": "integer"
+                },
+                "reason": {
+                    "type": "string"
+                },
+                "ref_id": {
+                    "type": "integer"
+                },
+                "ref_type": {
                     "type": "string"
                 }
             }
@@ -1358,10 +3564,35 @@ const docTemplate = `{
                 }
             }
         },
+        "model.SendMessageRequest": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "type": "string"
+                },
+                "client_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.TransferAdmin": {
+            "type": "object",
+            "properties": {
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "model.User": {
             "type": "object",
             "properties": {
                 "address": {
+                    "type": "string"
+                },
+                "age": {
+                    "type": "integer"
+                },
+                "blood_group": {
                     "type": "string"
                 },
                 "city": {
@@ -1433,6 +3664,9 @@ const docTemplate = `{
                 "role": {
                     "type": "string"
                 },
+                "upazila": {
+                    "type": "string"
+                },
                 "updated_at": {
                     "type": "string"
                 },
@@ -1441,6 +3675,41 @@ const docTemplate = `{
                 },
                 "verification_code": {
                     "type": "string"
+                }
+            }
+        },
+        "model.UserBadge": {
+            "type": "object",
+            "properties": {
+                "awarded_at": {
+                    "type": "string"
+                },
+                "blood_bank_id": {
+                    "type": "integer"
+                },
+                "code": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "kind": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "period": {
+                    "type": "string"
+                },
+                "threshold": {
+                    "type": "integer"
                 }
             }
         }

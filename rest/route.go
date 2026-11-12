@@ -66,6 +66,40 @@ func router() *mux.Router {
 	// Locations
 	router.Methods("GET").Path("/divisions").Name("getDivisions").HandlerFunc(GetDivisions)
 	router.Methods("GET").Path("/districts").Name("getDistricts").HandlerFunc(GetDistricts)
+	router.Methods("GET").Path("/upazilas").Name("getUpazilas").HandlerFunc(GetUpazilas)
+
+	// Blood banks (upazila-level donor groups)
+	router.Methods("GET").Path("/blood-banks").Name("getBloodBanks").HandlerFunc(GetBloodBanks)
+	router.Methods("POST").Path("/blood-bank").Name("createBloodBank").HandlerFunc(CreateBloodBank)
+	router.Methods("GET").Path("/blood-bank/mine").Name("getMyBloodBank").HandlerFunc(GetMyBloodBank)
+	router.Methods("GET").Path("/blood-bank/{id:[0-9]+}").Name("getBloodBank").HandlerFunc(GetBloodBank)
+	router.Methods("PUT").Path("/blood-bank/{id:[0-9]+}").Name("updateBloodBank").HandlerFunc(UpdateBloodBank)
+	router.Methods("PUT").Path("/blood-bank/{id:[0-9]+}/{action:approve|reject|suspend}").Name("reviewBloodBank").HandlerFunc(ReviewBloodBank)
+	router.Methods("POST").Path("/blood-bank/{id:[0-9]+}/join").Name("joinBloodBank").HandlerFunc(JoinBloodBank)
+	router.Methods("DELETE").Path("/blood-bank/{id:[0-9]+}/membership").Name("leaveBloodBank").HandlerFunc(LeaveBloodBank)
+	router.Methods("GET").Path("/blood-bank/{id:[0-9]+}/members").Name("getBankMembers").HandlerFunc(GetBankMembers)
+	router.Methods("PUT").Path("/blood-bank/{id:[0-9]+}/member/{userId:[0-9]+}/role").Name("setBankMemberRole").HandlerFunc(SetBankMemberRole)
+	router.Methods("PUT").Path("/blood-bank/{id:[0-9]+}/member/{userId:[0-9]+}/{action:approve|reject}").Name("reviewBankMember").HandlerFunc(ReviewBankMember)
+	router.Methods("DELETE").Path("/blood-bank/{id:[0-9]+}/member/{userId:[0-9]+}").Name("removeBankMember").HandlerFunc(RemoveBankMember)
+	router.Methods("PUT").Path("/blood-bank/{id:[0-9]+}/transfer-admin").Name("transferBankAdmin").HandlerFunc(TransferBankAdmin)
+	router.Methods("GET").Path("/blood-bank/{id:[0-9]+}/leaderboard").Name("getBankLeaderboard").HandlerFunc(GetBankLeaderboard)
+	router.Methods("GET").Path("/blood-bank/{id:[0-9]+}/conversation").Name("getBankConversation").HandlerFunc(GetBankConversation)
+
+	// Donation confirmation and gamification
+	router.Methods("GET").Path("/post/{id:[0-9]+}/interests").Name("getPostInterests").HandlerFunc(GetPostInterests)
+	router.Methods("POST").Path("/post/{id:[0-9]+}/confirm-donation").Name("confirmDonation").HandlerFunc(ConfirmDonation)
+	router.Methods("GET").Path("/user/{id:[0-9]+}/gamification").Name("getGamificationProfile").HandlerFunc(GetGamificationProfile)
+	router.Methods("GET").Path("/badges").Name("getBadges").HandlerFunc(GetBadges)
+	router.Methods("GET").Path("/leaderboard").Name("getLeaderboard").HandlerFunc(GetLeaderboard)
+
+	// Realtime chat
+	router.Methods("GET").Path("/ws").Name("websocket").HandlerFunc(ServeWebsocket)
+	router.Methods("GET").Path("/conversations").Name("getConversations").HandlerFunc(GetConversations)
+	router.Methods("POST").Path("/conversation/direct").Name("openDirectConversation").HandlerFunc(OpenDirectConversation)
+	router.Methods("GET").Path("/conversation/{id:[0-9]+}").Name("getConversation").HandlerFunc(GetConversation)
+	router.Methods("GET").Path("/conversation/{id:[0-9]+}/messages").Name("getMessages").HandlerFunc(GetMessages)
+	router.Methods("POST").Path("/conversation/{id:[0-9]+}/message").Name("sendMessage").HandlerFunc(SendMessage)
+	router.Methods("PUT").Path("/conversation/{id:[0-9]+}/read").Name("markConversationRead").HandlerFunc(MarkConversationRead)
 
 	//role
 	// router.Methods("POST").Path("/role").Name("CreateRole").HandlerFunc(CreateRole)

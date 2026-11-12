@@ -16,6 +16,9 @@ type Donor struct {
 	City             string    `json:"city,omitempty"`
 	District         string    `json:"district,omitempty"`
 	Division         string    `json:"division,omitempty"`
+	Upazila          string    `json:"upazila,omitempty"`
+	Points           int       `json:"points"`
+	DonationCount    int       `json:"donation_count"`
 	Profession       string    `json:"profession,omitempty"`
 	DonatedAt        string    `json:"donated_at,omitempty"`
 	HidePersonalInfo bool      `json:"hide_personal_info"`
@@ -28,6 +31,7 @@ type DonorFilter struct {
 	BloodGroup string
 	Division   string
 	District   string
+	Upazila    string
 	Gender     string // "male", "female", "other"/"others"
 	Search     string
 	Page       int

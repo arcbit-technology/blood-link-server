@@ -33,6 +33,7 @@ func GetDonors(w http.ResponseWriter, r *http.Request) {
 		BloodGroup: normalizeBloodGroup(q.Get("blood_group")),
 		Division:   strings.TrimSpace(q.Get("division")),
 		District:   strings.TrimSpace(q.Get("district")),
+		Upazila:    strings.TrimSpace(q.Get("upazila")),
 		Gender:     strings.TrimSpace(q.Get("gender")),
 		Search:     q.Get("search"),
 	}

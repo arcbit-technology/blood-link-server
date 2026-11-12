@@ -18,6 +18,7 @@ type DonationPost struct {
 	ContactPhone    string    `json:"contact_phone,omitempty"`
 	RequiredDate    string    `json:"required_date"` // YYYY-MM-DD
 	Status          string    `json:"status"`        // open | fulfilled | closed
+	Urgency         string    `json:"urgency"`       // normal | urgent | emergency
 	InterestedUsers []int     `json:"interested_users"`
 	CreatedAt       time.Time `json:"created_at"`
 }
@@ -34,3 +35,5 @@ type PostFilter struct {
 }
 
 var PostStatuses = []string{"open", "fulfilled", "closed"}
+
+var PostUrgencies = []string{"normal", "urgent", "emergency"}

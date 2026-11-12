@@ -10,4 +10,5 @@ const (
 	DeleteUserPermission
 	ToggleUserStatusPermission
 	ProfileLoginPermission
+	ManageBloodBanksPermission // 10, seeded by migration 000003
 )

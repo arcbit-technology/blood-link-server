@@ -64,6 +64,13 @@ func validatePost(p *model.DonationPost) error {
 	p.Division = strings.TrimSpace(p.Division)
 	p.ContactPhone = strings.TrimSpace(p.ContactPhone)
 	p.BloodGroup = strings.ToUpper(strings.TrimSpace(p.BloodGroup))
+	p.Urgency = strings.ToLower(strings.TrimSpace(p.Urgency))
+	if p.Urgency == "" {
+		p.Urgency = "normal"
+	}
+	if !contains(model.PostUrgencies, p.Urgency) {
+		return model.NewError(itn.ErrorInvalidData, 400)
+	}
 
 	if p.Title == "" || utf8.RuneCountInString(p.Title) > 255 {
 		return model.NewError(itn.ErrorPostTitleRequired, 400)
@@ -92,4 +99,13 @@ func validatePost(p *model.DonationPost) error {
 		return model.NewError(itn.ErrorInvalidData, 400)
 	}
 	return nil
+}
+
+func contains(list []string, v string) bool {
+	for _, s := range list {
+		if s == v {
+			return true
+		}
+	}
+	return false
 }

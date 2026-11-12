@@ -18,7 +18,7 @@ const postColumns = `
 	     ELSE TRIM(COALESCE(a.first_name, '') || ' ' || COALESCE(a.last_name, '')) END,
 	p.blood_group, p.title, COALESCE(p.description, ''), COALESCE(p.hospital_name, ''),
 	COALESCE(p.address, ''), COALESCE(p.district, ''), COALESCE(p.division, ''),
-	p.units_needed, COALESCE(p.contact_phone, ''), p.required_date, p.status,
+	p.units_needed, COALESCE(p.contact_phone, ''), p.required_date, p.status, p.urgency,
 	COALESCE((SELECT array_agg(i.user_id ORDER BY i.created_at)
 	          FROM donation_post_interests i WHERE i.post_id = p.id), '{}'),
 	p.created_at`
@@ -33,7 +33,7 @@ func scanPost(row interface{ Scan(...any) error }) (model.DonationPost, error) {
 	err := row.Scan(
 		&p.Id, &p.AuthorId, &p.AuthorName, &p.BloodGroup, &p.Title, &p.Description,
 		&p.HospitalName, &p.Address, &p.District, &p.Division, &p.UnitsNeeded,
-		&p.ContactPhone, &required, &p.Status, pq.Array(&interested), &created,
+		&p.ContactPhone, &required, &p.Status, &p.Urgency, pq.Array(&interested), &created,
 	)
 	if required.Valid {
 		p.RequiredDate = required.Time.Format("2006-01-02")
@@ -131,15 +131,15 @@ func GetPost(id int) (model.DonationPost, error) {
 func CreatePost(p model.DonationPost) (int, error) {
 	query := `INSERT INTO donation_posts (
 			author_id, blood_group, title, description, hospital_name, address,
-			district, division, units_needed, contact_phone, required_date, status)
+			district, division, units_needed, contact_phone, required_date, status, urgency)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,
 			COALESCE(NULLIF($10, ''), (SELECT NULLIF(phone, '') FROM users WHERE id = $1)),
-			$11::date, 'open')
+			$11::date, 'open', $12)
 		RETURNING id`
 
 	var id int
 	err := DB.QueryRow(query, p.AuthorId, p.BloodGroup, p.Title, p.Description, p.HospitalName,
-		p.Address, p.District, p.Division, p.UnitsNeeded, p.ContactPhone, p.RequiredDate).Scan(&id)
+		p.Address, p.District, p.Division, p.UnitsNeeded, p.ContactPhone, p.RequiredDate, p.Urgency).Scan(&id)
 	if err != nil {
 		logger.GetLogger().LogErrors(err, map[string]interface{}{"query": query})
 		return 0, model.UnknownError

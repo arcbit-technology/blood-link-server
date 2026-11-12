@@ -64,16 +64,17 @@ func createUser(user *model.User, tx *sql.Tx) error {
 	query := `Insert into users (
 		first_name, last_name, password, phone, address,
 		email, city, role_id, country, created_by, verification_code, is_password_temporary, is_verified, hide_personal_info,
-		gender, district, division, blood_group, profession, date_of_birth, donated_at)
+		gender, district, division, blood_group, profession, date_of_birth, donated_at, upazila)
 		Values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14,
 		NULLIF($15, ''), NULLIF($16, ''), NULLIF($17, ''), NULLIF($18, ''), NULLIF($19, ''),
 		CASE WHEN $20::int > 0 THEN (current_date - make_interval(years => $20::int))::date END,
-		NULLIF($21, '')::date) RETURNING id`
+		NULLIF($21, '')::date, NULLIF($22, '')) RETURNING id`
 
 	err := tx.QueryRow(query, user.Firstname, user.Lastname, user.Password, user.Phone, user.Address,
 		user.Email, user.City, user.IdRole, user.Country, user.CreatedBy,
 		user.VerificationCode, user.IsPasswordTemporary, user.IsVerified, user.HidePersonalInfo,
 		user.Gender, user.District, user.Division, user.BloodGroup, user.Profession, user.Age, user.DonatedAt,
+		user.Upazila,
 	).Scan(&user.Id)
 
 	if err != nil {
@@ -103,15 +104,23 @@ func UpdateUserProfilePicture(userProfileKey string, id int) error {
 }
 
 func UpdateUser(user model.User, id int, s model.Session) error {
+	args := []interface{}{s.UserId, id}
+	// location fields are validated by the controller and always sent
+	// together; they are bound as parameters
+	location := ""
+	if user.Division != "" && user.District != "" {
+		args = append(args, user.Division, user.District, user.Upazila)
+		location = "division = $3, district = $4, upazila = NULLIF($5, ''),"
+	}
 
-	query := fmt.Sprintf(`UPDATE  users SET %s updated_at=CURRENT_TIMESTAMP, updated_by=$1
+	query := fmt.Sprintf(`UPDATE  users SET %s %s updated_at=CURRENT_TIMESTAMP, updated_by=$1
 					WHERE 
 						id=$2
 						AND is_available=TRUE
-						`, prepareUserFieldsToUpdate(user),
+						`, prepareUserFieldsToUpdate(user), location,
 	)
 
-	_, err := DB.Exec(query, s.UserId, id)
+	_, err := DB.Exec(query, args...)
 
 	if err != nil {
 		logger.GetLogger().LogErrors(err, map[string]interface{}{
@@ -234,7 +243,8 @@ func GetUser(id int, s model.Session) (model.User, error) {
 	u.id, COALESCE(u.first_name, ''), COALESCE(u.last_name, ''), COALESCE(u.gender, ''),
 	COALESCE(u.phone, ''), COALESCE(u.city, ''), COALESCE(u.address, ''), u.email,
 	COALESCE(u.country, ''), r.name, u.is_available, COALESCE(u.created_by, 0), u.created_at,
-	u.last_login, u.donated_at, u.role_id, COALESCE(u.is_verified, false), COALESCE(u.hide_personal_info, false)
+	u.last_login, u.donated_at, u.role_id, COALESCE(u.is_verified, false), COALESCE(u.hide_personal_info, false),
+	COALESCE(u.division, ''), COALESCE(u.district, ''), COALESCE(u.upazila, ''), COALESCE(u.blood_group, '')
 	FROM users u
 	JOIN role r ON r.id=u.role_id 
 	WHERE
@@ -249,6 +259,7 @@ func GetUser(id int, s model.Session) (model.User, error) {
 	err := DB.QueryRow(query, id).Scan(
 		&user.Id, &user.Firstname, &user.Lastname, &user.Gender, &user.Phone, &user.City, &user.Address,
 		&user.Email, &user.Country, &user.RoleName, &user.IsAvailable, &user.CreatedBy, &user.CreatedAt, &lastlogin, &donatedAt, &user.IdRole, &user.IsVerified, &user.HidePersonalInfo,
+		&user.Division, &user.District, &user.Upazila, &user.BloodGroup,
 	)
 	if errors.Is(err, sql.ErrNoRows) {
 		return model.User{}, model.NewError(itn.ErrorUserNotFound, 404)

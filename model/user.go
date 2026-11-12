@@ -23,6 +23,7 @@ type User struct {
 	City                string                `json:"city,omitempty"`
 	District            string                `json:"district,omitempty"`
 	Division            string                `json:"division,omitempty"`
+	Upazila             string                `json:"upazila,omitempty"`
 	Country             string                `json:"country,omitempty"`
 	IsVerified          bool                  `json:"is_verified,omitempty"`
 	LastLogin           string                `json:"last_login,omitempty"`

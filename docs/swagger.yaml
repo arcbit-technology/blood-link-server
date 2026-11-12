@@ -1,4 +1,111 @@
 definitions:
+  model.Badge:
+    properties:
+      code:
+        type: string
+      description:
+        type: string
+      icon:
+        type: string
+      id:
+        type: integer
+      kind:
+        type: string
+      name:
+        type: string
+      threshold:
+        type: integer
+    type: object
+  model.BankMember:
+    properties:
+      blood_bank_id:
+        type: integer
+      blood_group:
+        type: string
+      created_at:
+        type: string
+      donated_at:
+        type: string
+      donation_count:
+        type: integer
+      first_name:
+        type: string
+      id:
+        type: integer
+      joined_at:
+        type: string
+      last_name:
+        type: string
+      phone:
+        type: string
+      points:
+        type: integer
+      position:
+        type: string
+      role:
+        type: string
+      status:
+        type: string
+      upazila:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  model.BankMemberRoleUpdate:
+    properties:
+      position:
+        type: string
+      role:
+        type: string
+    type: object
+  model.BankReview:
+    properties:
+      reason:
+        type: string
+    type: object
+  model.BloodBank:
+    properties:
+      address:
+        type: string
+      admin_id:
+        type: integer
+      admin_name:
+        type: string
+      contact_phone:
+        type: string
+      created_at:
+        type: string
+      created_by:
+        type: integer
+      created_by_name:
+        type: string
+      description:
+        type: string
+      district:
+        type: string
+      division:
+        type: string
+      donation_count:
+        type: integer
+      id:
+        type: integer
+      logo:
+        type: string
+      member_count:
+        type: integer
+      name:
+        type: string
+      rejection_reason:
+        type: string
+      reviewed_at:
+        type: string
+      status:
+        type: string
+      total_points:
+        type: integer
+      upazila:
+        type: string
+    type: object
   model.ChangePassword:
     properties:
       new_password:
@@ -13,6 +120,156 @@ definitions:
       password:
         type: string
     type: object
+  model.ChatUser:
+    properties:
+      first_name:
+        type: string
+      id:
+        type: integer
+      last_name:
+        type: string
+    type: object
+  model.ConfirmDonation:
+    properties:
+      donation_date:
+        description: YYYY-MM-DD, defaults to today
+        type: string
+      donor_id:
+        type: integer
+      units:
+        type: integer
+    type: object
+  model.Conversation:
+    properties:
+      blood_bank_id:
+        type: integer
+      blood_bank_name:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      last_message:
+        $ref: '#/definitions/model.Message'
+      last_message_at:
+        type: string
+      other_user:
+        $ref: '#/definitions/model.ChatUser'
+      post_id:
+        type: integer
+      post_title:
+        type: string
+      type:
+        type: string
+      unread_count:
+        type: integer
+    type: object
+  model.DirectConversationRequest:
+    properties:
+      post_id:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  model.DonationConfirmation:
+    properties:
+      donor_id:
+        type: integer
+      history_id:
+        type: integer
+      new_badges:
+        items:
+          $ref: '#/definitions/model.Badge'
+        type: array
+      points_awarded:
+        type: integer
+      total_points:
+        type: integer
+    type: object
+  model.DonationPost:
+    properties:
+      address:
+        type: string
+      author_id:
+        type: integer
+      author_name:
+        description: empty when the author hides personal info
+        type: string
+      blood_group:
+        type: string
+      contact_phone:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      district:
+        type: string
+      division:
+        type: string
+      hospital_name:
+        type: string
+      id:
+        type: integer
+      interested_users:
+        items:
+          type: integer
+        type: array
+      required_date:
+        description: YYYY-MM-DD
+        type: string
+      status:
+        description: open | fulfilled | closed
+        type: string
+      title:
+        type: string
+      units_needed:
+        type: integer
+      urgency:
+        description: normal | urgent | emergency
+        type: string
+    type: object
+  model.Donor:
+    properties:
+      address:
+        type: string
+      age:
+        type: integer
+      blood_group:
+        type: string
+      city:
+        type: string
+      created_at:
+        type: string
+      district:
+        type: string
+      division:
+        type: string
+      donated_at:
+        type: string
+      donation_count:
+        type: integer
+      first_name:
+        type: string
+      gender:
+        type: string
+      hide_personal_info:
+        type: boolean
+      id:
+        type: integer
+      is_verified:
+        type: boolean
+      last_name:
+        type: string
+      phone:
+        type: string
+      points:
+        type: integer
+      profession:
+        type: string
+      upazila:
+        type: string
+    type: object
   model.ForgotPasswordRequest:
     properties:
       email:
@@ -23,6 +280,98 @@ definitions:
       message:
         type: string
       new_password:
+        type: string
+    type: object
+  model.GamificationProfile:
+    properties:
+      all_badges:
+        items:
+          $ref: '#/definitions/model.Badge'
+        type: array
+      badges:
+        items:
+          $ref: '#/definitions/model.UserBadge'
+        type: array
+      donation_count:
+        type: integer
+      level:
+        $ref: '#/definitions/model.Level'
+      next_level:
+        $ref: '#/definitions/model.Level'
+      points:
+        type: integer
+      rank:
+        type: integer
+      recent:
+        items:
+          $ref: '#/definitions/model.PointTransaction'
+        type: array
+      user_id:
+        type: integer
+    type: object
+  model.InterestedDonor:
+    properties:
+      blood_bank_name:
+        type: string
+      blood_group:
+        type: string
+      confirmed:
+        description: already confirmed for this post
+        type: boolean
+      district:
+        type: string
+      donated_at:
+        type: string
+      donation_count:
+        type: integer
+      eligible:
+        description: 90 days since last donation
+        type: boolean
+      first_name:
+        type: string
+      interested_at:
+        type: string
+      last_name:
+        type: string
+      phone:
+        type: string
+      points:
+        type: integer
+      upazila:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  model.LeaderboardEntry:
+    properties:
+      blood_bank_id:
+        type: integer
+      blood_bank_name:
+        type: string
+      blood_group:
+        type: string
+      district:
+        type: string
+      donations:
+        type: integer
+      first_name:
+        type: string
+      last_name:
+        type: string
+      points:
+        type: integer
+      rank:
+        type: integer
+      upazila:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  model.Level:
+    properties:
+      min_points:
+        type: integer
+      name:
         type: string
     type: object
   model.Login:
@@ -47,6 +396,30 @@ definitions:
       password:
         type: string
     type: object
+  model.Message:
+    properties:
+      body:
+        type: string
+      conversation_id:
+        type: integer
+      created_at:
+        type: string
+      id:
+        type: integer
+      sender_id:
+        type: integer
+      sender_name:
+        type: string
+    type: object
+  model.MyBloodBank:
+    properties:
+      bank:
+        $ref: '#/definitions/model.BloodBank'
+      membership:
+        $ref: '#/definitions/model.BankMember'
+      pending_request:
+        $ref: '#/definitions/model.BloodBank'
+    type: object
   model.PaginatedResponse:
     properties:
       data: {}
@@ -64,6 +437,21 @@ definitions:
       id:
         type: integer
       name:
+        type: string
+    type: object
+  model.PointTransaction:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      points:
+        type: integer
+      reason:
+        type: string
+      ref_id:
+        type: integer
+      ref_type:
         type: string
     type: object
   model.ProfileLogin:
@@ -115,9 +503,25 @@ definitions:
       updated_by:
         type: integer
     type: object
+  model.SendMessageRequest:
+    properties:
+      body:
+        type: string
+      client_id:
+        type: string
+    type: object
+  model.TransferAdmin:
+    properties:
+      user_id:
+        type: integer
+    type: object
   model.User:
     properties:
       address:
+        type: string
+      age:
+        type: integer
+      blood_group:
         type: string
       city:
         type: string
@@ -165,12 +569,37 @@ definitions:
         type: string
       role:
         type: string
+      upazila:
+        type: string
       updated_at:
         type: string
       updated_by:
         type: integer
       verification_code:
         type: string
+    type: object
+  model.UserBadge:
+    properties:
+      awarded_at:
+        type: string
+      blood_bank_id:
+        type: integer
+      code:
+        type: string
+      description:
+        type: string
+      icon:
+        type: string
+      id:
+        type: integer
+      kind:
+        type: string
+      name:
+        type: string
+      period:
+        type: string
+      threshold:
+        type: integer
     type: object
 info:
   contact: {}
@@ -253,6 +682,503 @@ paths:
       summary: fetch login data
       tags:
       - authentication
+  /badges:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Badge'
+            type: array
+      summary: all badges that can be earned
+      tags:
+      - gamification
+  /blood-bank:
+    post:
+      consumes:
+      - application/json
+      description: any donor can request a blood bank for an upazila; a platform admin
+        approves it and the creator becomes its admin
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: name, description, division, district, upazila, address, contact_phone
+        in: body
+        name: bank
+        required: true
+        schema:
+          $ref: '#/definitions/model.BloodBank'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BloodBank'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "409":
+          description: Conflict
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: request a new blood bank
+      tags:
+      - blood banks
+  /blood-bank/{id}:
+    get:
+      parameters:
+      - description: blood bank id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BloodBank'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: get a blood bank
+      tags:
+      - blood banks
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: blood bank id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: name, description, address, contact_phone, logo
+        in: body
+        name: bank
+        required: true
+        schema:
+          $ref: '#/definitions/model.BloodBank'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BloodBank'
+      security:
+      - Bearer: []
+      summary: edit a blood bank (bank admin)
+      tags:
+      - blood banks
+  /blood-bank/{id}/{action}:
+    put:
+      consumes:
+      - application/json
+      description: 'approve: pending or suspended -> approved; reject: pending ->
+        rejected; suspend: approved -> suspended. reject and suspend need a reason.'
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: blood bank id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: approve | reject | suspend
+        in: path
+        name: action
+        required: true
+        type: string
+      - description: reason
+        in: body
+        name: review
+        schema:
+          $ref: '#/definitions/model.BankReview'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BloodBank'
+        "403":
+          description: Forbidden
+          schema:
+            type: string
+        "409":
+          description: Conflict
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: approve, reject or suspend a blood bank (platform admin)
+      tags:
+      - blood banks
+  /blood-bank/{id}/conversation:
+    get:
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: blood bank id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Conversation'
+      security:
+      - Bearer: []
+      summary: the blood bank's group chat (members only)
+      tags:
+      - blood banks
+  /blood-bank/{id}/join:
+    post:
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: blood bank id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.MyBloodBank'
+        "409":
+          description: Conflict
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: ask to join a blood bank
+      tags:
+      - blood banks
+  /blood-bank/{id}/leaderboard:
+    get:
+      parameters:
+      - description: blood bank id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: all (default) | month
+        in: query
+        name: period
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.LeaderboardEntry'
+            type: array
+      summary: top donors of a blood bank
+      tags:
+      - gamification
+  /blood-bank/{id}/member/{userId}:
+    delete:
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: blood bank id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: user id
+        in: path
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: remove a member (bank admin / officer)
+      tags:
+      - blood banks
+  /blood-bank/{id}/member/{userId}/{action}:
+    put:
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: blood bank id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: user id
+        in: path
+        name: userId
+        required: true
+        type: integer
+      - description: approve | reject
+        in: path
+        name: action
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: approve or reject a join request (bank admin / officer)
+      tags:
+      - blood banks
+  /blood-bank/{id}/member/{userId}/role:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: blood bank id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: user id
+        in: path
+        name: userId
+        required: true
+        type: integer
+      - description: role (officer | member), position
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/model.BankMemberRoleUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.BankMember'
+            type: array
+      security:
+      - Bearer: []
+      summary: set a member's role and position (bank admin)
+      tags:
+      - blood banks
+  /blood-bank/{id}/members:
+    get:
+      description: active members are public; pending requests are visible to the
+        bank admin and officers
+      parameters:
+      - description: blood bank id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: active (default) | pending
+        in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.BankMember'
+            type: array
+      summary: list blood bank members
+      tags:
+      - blood banks
+  /blood-bank/{id}/membership:
+    delete:
+      description: the bank admin must transfer admin first
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: blood bank id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: leave a blood bank or cancel a join request
+      tags:
+      - blood banks
+  /blood-bank/{id}/transfer-admin:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: blood bank id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: user_id
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.TransferAdmin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BloodBank'
+      security:
+      - Bearer: []
+      summary: hand the bank admin role to another active member
+      tags:
+      - blood banks
+  /blood-bank/mine:
+    get:
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.MyBloodBank'
+      security:
+      - Bearer: []
+      summary: the caller's blood bank membership and pending creation request
+      tags:
+      - blood banks
+  /blood-banks:
+    get:
+      description: approved blood banks; platform admins may filter by status (pending
+        | approved | rejected | suspended | all)
+      parameters:
+      - description: Division
+        in: query
+        name: division
+        type: string
+      - description: District
+        in: query
+        name: district
+        type: string
+      - description: Upazila / thana
+        in: query
+        name: upazila
+        type: string
+      - description: Search name, description, location
+        in: query
+        name: search
+        type: string
+      - description: admin only
+        in: query
+        name: status
+        type: string
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 30
+        description: Page size (max 100)
+        in: query
+        name: size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.PaginatedResponse'
+      summary: list blood banks
+      tags:
+      - blood banks
   /changepassword/{id}:
     put:
       consumes:
@@ -338,6 +1264,271 @@ paths:
       summary: update user password
       tags:
       - users
+  /conversation/{id}:
+    get:
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: conversation id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Conversation'
+      security:
+      - Bearer: []
+      summary: one of the caller's conversations
+      tags:
+      - chat
+  /conversation/{id}/message:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: conversation id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: body, client_id
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.SendMessageRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Message'
+      security:
+      - Bearer: []
+      summary: send a message (REST fallback of the websocket "send" event)
+      tags:
+      - chat
+  /conversation/{id}/messages:
+    get:
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: conversation id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: only messages older than this id
+        in: query
+        name: before_id
+        type: integer
+      - default: 50
+        description: max 100
+        in: query
+        name: size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Message'
+            type: array
+      security:
+      - Bearer: []
+      summary: message history, oldest first
+      tags:
+      - chat
+  /conversation/{id}/read:
+    put:
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: conversation id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: last read message id
+        in: query
+        name: message_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: mark messages up to message_id as read
+      tags:
+      - chat
+  /conversation/direct:
+    post:
+      consumes:
+      - application/json
+      description: allowed between the post author and a user interested in the post
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: post_id, user_id
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.DirectConversationRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Conversation'
+        "403":
+          description: Forbidden
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: open a 1:1 chat about a post
+      tags:
+      - chat
+  /conversations:
+    get:
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Conversation'
+            type: array
+      security:
+      - Bearer: []
+      summary: the caller's conversations with last message and unread count
+      tags:
+      - chat
+  /doner/{id}:
+    get:
+      description: public profile of a single donor
+      parameters:
+      - description: donor id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Donor'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: get donor
+      tags:
+      - donors
+  /doners:
+    get:
+      description: public donor directory with filters and pagination. Personal details
+        are hidden for donors who opted out.
+      parameters:
+      - description: Blood group, e.g. A+ (URL-encoded as A%2B)
+        in: query
+        name: blood_group
+        type: string
+      - description: Division
+        in: query
+        name: division
+        type: string
+      - description: District
+        in: query
+        name: district
+        type: string
+      - description: male | female | others
+        in: query
+        name: gender
+        type: string
+      - description: Search by name, district, city, profession
+        in: query
+        name: search
+        type: string
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 12
+        description: Page size (max 100)
+        in: query
+        name: size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.PaginatedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: list donors
+      tags:
+      - donors
   /forgotpassword:
     post:
       consumes:
@@ -399,6 +1590,42 @@ paths:
       summary: check if token is valid
       tags:
       - authentication
+  /leaderboard:
+    get:
+      parameters:
+      - description: global (default) | division | district | upazila | bank
+        in: query
+        name: scope
+        type: string
+      - description: division / district / upazila name
+        in: query
+        name: value
+        type: string
+      - description: blood bank id (scope=bank)
+        in: query
+        name: bank_id
+        type: integer
+      - description: all (default) | month
+        in: query
+        name: period
+        type: string
+      - default: 20
+        description: max 100
+        in: query
+        name: size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.LeaderboardEntry'
+            type: array
+      summary: top donors by points
+      tags:
+      - gamification
   /login:
     post:
       consumes:
@@ -530,6 +1757,233 @@ paths:
       summary: check api status
       tags:
       - system
+  /post:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: title, blood_group, description, hospital_name, address, division,
+          district, required_date (YYYY-MM-DD), units_needed, contact_phone
+        in: body
+        name: post
+        required: true
+        schema:
+          $ref: '#/definitions/model.DonationPost'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.DonationPost'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "403":
+          description: Forbidden
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: create a blood request post
+      tags:
+      - posts
+  /post/{id}:
+    get:
+      parameters:
+      - description: post id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.DonationPost'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: get a blood request post
+      tags:
+      - posts
+  /post/{id}/confirm-donation:
+    post:
+      consumes:
+      - application/json
+      description: awards the donor points and badges; marks the post fulfilled once
+        enough units are confirmed
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: post id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: donor_id, units, donation_date (YYYY-MM-DD)
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/model.ConfirmDonation'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.DonationConfirmation'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "403":
+          description: Forbidden
+          schema:
+            type: string
+        "409":
+          description: Conflict
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: confirm that an interested donor donated (post author only)
+      tags:
+      - posts
+  /post/{id}/interest:
+    put:
+      description: toggles the logged-in user's interest; returns the updated post
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: post id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.DonationPost'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "409":
+          description: Conflict
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: express or withdraw interest in a post
+      tags:
+      - posts
+  /post/{id}/interests:
+    get:
+      parameters:
+      - default: '"Bearer YOUR_ACCESS_TOKEN"'
+        description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: post id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.InterestedDonor'
+            type: array
+        "403":
+          description: Forbidden
+          schema:
+            type: string
+      security:
+      - Bearer: []
+      summary: donors interested in a post (post author only)
+      tags:
+      - posts
+  /posts:
+    get:
+      description: public list of blood request posts, open ones first
+      parameters:
+      - description: open | fulfilled | closed
+        in: query
+        name: status
+        type: string
+      - description: Blood group, e.g. A+ (URL-encoded as A%2B)
+        in: query
+        name: blood_group
+        type: string
+      - description: Division
+        in: query
+        name: division
+        type: string
+      - description: District
+        in: query
+        name: district
+        type: string
+      - description: Search title, description, hospital, district
+        in: query
+        name: search
+        type: string
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 30
+        description: Page size (max 100)
+        in: query
+        name: size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.PaginatedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: list blood request posts
+      tags:
+      - posts
   /profilecomplete:
     get:
       consumes:
@@ -871,6 +2325,24 @@ paths:
       summary: delete user
       tags:
       - users
+  /user/{id}/gamification:
+    get:
+      parameters:
+      - description: user id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.GamificationProfile'
+      summary: a user's points, level, rank and badges
+      tags:
+      - gamification
   /users:
     get:
       consumes:
@@ -932,4 +2404,20 @@ paths:
       summary: verify account
       tags:
       - authentication
+  /ws:
+    get:
+      description: |-
+        browsers cannot set headers on websockets, so the token is sent as ?token=.
+        client -> server: {type: send|typing|read|ping, conversation_id, body, client_id, message_id}
+        server -> client: {type: message|typing|read|notification|error|pong, ...}
+      parameters:
+      - description: access token
+        in: query
+        name: token
+        required: true
+        type: string
+      responses: {}
+      summary: realtime websocket (chat + notifications)
+      tags:
+      - chat
 swagger: "2.0"

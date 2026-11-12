@@ -17,10 +17,10 @@ const donorColumns = `
 	COALESCE(u.blood_group, ''),
 	COALESCE(date_part('year', age(u.date_of_birth))::int, 0),
 	COALESCE(u.phone, ''), COALESCE(u.address, ''), COALESCE(u.city, ''),
-	COALESCE(u.district, ''), COALESCE(u.division, ''), COALESCE(u.profession, ''),
+	COALESCE(u.district, ''), COALESCE(u.division, ''), COALESCE(u.upazila, ''), COALESCE(u.profession, ''),
 	u.donated_at,
 	COALESCE(u.hide_personal_info, false), COALESCE(u.is_verified, false),
-	u.created_at`
+	u.created_at, u.points, u.donation_count`
 
 // donors are active, non-admin accounts
 var donorBaseWhere = fmt.Sprintf(`u.is_available = TRUE AND u.role_id NOT IN (%d, %d)`,
@@ -31,8 +31,8 @@ func scanDonor(row interface{ Scan(...any) error }) (model.Donor, error) {
 	var donatedAt, createdAt sql.NullTime
 	err := row.Scan(
 		&d.Id, &d.Firstname, &d.Lastname, &d.Gender, &d.BloodGroup, &d.Age,
-		&d.Phone, &d.Address, &d.City, &d.District, &d.Division, &d.Profession,
-		&donatedAt, &d.HidePersonalInfo, &d.IsVerified, &createdAt,
+		&d.Phone, &d.Address, &d.City, &d.District, &d.Division, &d.Upazila, &d.Profession,
+		&donatedAt, &d.HidePersonalInfo, &d.IsVerified, &createdAt, &d.Points, &d.DonationCount,
 	)
 	if donatedAt.Valid {
 		d.DonatedAt = donatedAt.Time.Format("2006-01-02")
@@ -60,6 +60,9 @@ func GetDonors(f model.DonorFilter) (model.PaginatedResponse, error) {
 	if f.District != "" {
 		where = append(where, "LOWER(u.district) = LOWER("+arg(f.District)+")")
 	}
+	if f.Upazila != "" {
+		where = append(where, "LOWER(u.upazila) = LOWER("+arg(f.Upazila)+")")
+	}
 	switch strings.ToLower(f.Gender) {
 	case "male", "m":
 		where = append(where, "UPPER(u.gender) IN ('M', 'MALE')")
@@ -72,7 +75,7 @@ func GetDonors(f model.DonorFilter) (model.PaginatedResponse, error) {
 		p := arg("%" + escapeLike(s) + "%")
 		// names of donors who hide their personal info are not searchable
 		where = append(where, fmt.Sprintf(`(
-			u.district ILIKE %[1]s OR u.city ILIKE %[1]s OR u.division ILIKE %[1]s
+			u.district ILIKE %[1]s OR u.upazila ILIKE %[1]s OR u.city ILIKE %[1]s OR u.division ILIKE %[1]s
 			OR u.blood_group ILIKE %[1]s OR u.profession ILIKE %[1]s
 			OR (NOT COALESCE(u.hide_personal_info, false)
 			    AND (COALESCE(u.first_name, '') || ' ' || COALESCE(u.last_name, '')) ILIKE %[1]s)

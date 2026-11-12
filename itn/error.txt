@@ -184,3 +184,27 @@ api.bloodlinkapi.err.183: Error creating partner profile.
 api.bloodlinkapi.err.184: Buyer type did not matched.
 api.bloodlinkapi.err.185: Error getting seller Profile.
 api.bloodlinkapi.err.186: Profession does not exist.
+api.bloodlinkapi.err.195: The selected upazila does not belong to the district.
+api.bloodlinkapi.err.196: Blood bank not found.
+api.bloodlinkapi.err.197: Blood bank name is required (3-120 characters).
+api.bloodlinkapi.err.198: Blood bank division, district and upazila are required.
+api.bloodlinkapi.err.199: You already belong to, or have requested to join, a blood bank.
+api.bloodlinkapi.err.200: You already have a blood bank request waiting for review.
+api.bloodlinkapi.err.201: This blood bank is not active.
+api.bloodlinkapi.err.202: This blood bank request has already been reviewed.
+api.bloodlinkapi.err.203: You are not allowed to do this in this blood bank.
+api.bloodlinkapi.err.204: Blood bank member not found.
+api.bloodlinkapi.err.205: Transfer the admin role to another member before leaving.
+api.bloodlinkapi.err.206: Invalid blood bank role.
+api.bloodlinkapi.err.207: Position must be at most 60 characters.
+api.bloodlinkapi.err.208: The new admin must be an active member of the blood bank.
+api.bloodlinkapi.err.209: A reason is required.
+api.bloodlinkapi.err.210: Only the author of the post can do this.
+api.bloodlinkapi.err.211: This donor has not expressed interest in the post.
+api.bloodlinkapi.err.212: This donation has already been confirmed.
+api.bloodlinkapi.err.213: The donor donated less than 90 days ago.
+api.bloodlinkapi.err.214: Donation date is invalid or in the future.
+api.bloodlinkapi.err.215: Conversation not found.
+api.bloodlinkapi.err.216: Message must be between 1 and 2000 characters.
+api.bloodlinkapi.err.217: Too many messages, slow down.
+api.bloodlinkapi.err.218: You can only message the author of a post you are interested in, or a donor interested in your post.

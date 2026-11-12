@@ -36,6 +36,10 @@ func UpdateUser(id int, user model.User, session model.Session) error {
 		return model.NewError(itn.ErrorUnauthorizedOperation, 403)
 	}
 
+	if err := validateUserLocation(&user, false); err != nil {
+		return err
+	}
+
 	err = dao.UpdateUser(user, id, session)
 	if err != nil {
 		return err
@@ -123,6 +127,27 @@ func validateUser(user *model.User) error {
 		return model.NewError(itn.ErrorRoleRequired, 400)
 	}
 
+	return validateUserLocation(user, false)
+}
+
+// validateUserLocation checks division / district / upazila. The
+// location is optional unless required is true; when any part is given,
+// division and district must be valid and the upazila (optional) must
+// belong to the district.
+func validateUserLocation(user *model.User, required bool) error {
+	user.Division = strings.TrimSpace(user.Division)
+	user.District = strings.TrimSpace(user.District)
+	user.Upazila = strings.TrimSpace(user.Upazila)
+
+	if user.Division == "" && user.District == "" && user.Upazila == "" && !required {
+		return nil
+	}
+	if !model.IsDistrictInDivision(user.Division, user.District) {
+		return model.NewError(itn.ErrorInvalidData, 400)
+	}
+	if user.Upazila != "" && !model.IsValidUpazila(user.District, user.Upazila) {
+		return model.NewError(itn.ErrorUpazilaInvalid, 400)
+	}
 	return nil
 }
 
